@@ -1,4 +1,4 @@
-<mxfile host="app.diagrams.net" modified="2023-03-07T21:28:47.202Z" agent="5.0 (Windows)" etag="cmZn9hP2dE5r7qp5_Pby" version="21.0.2" type="github" pages="2">
+<mxfile host="app.diagrams.net" modified="2023-03-07T22:01:39.988Z" agent="5.0 (Windows)" etag="aBvb5BciZgEDqRX-Dp-5" version="21.0.2" type="github" pages="2">
   <diagram name="UI" id="D-m7faE2fxigUxJRYWDk">
     <mxGraphModel dx="1178" dy="804" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
       <root>
@@ -65,6 +65,15 @@
         </mxCell>
         <mxCell id="UQ9ZrAOwguX3fRSOWbUr-2" value="&lt;ul&gt;&lt;li&gt;Create(bookTitle)&lt;/li&gt;&lt;li&gt;GetStatus(bookId)&lt;/li&gt;&lt;li&gt;Download(bookId)&lt;br&gt;&lt;/li&gt;&lt;/ul&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
           <mxGeometry x="120" y="80" width="240" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="3BECemAOmpxZgVmXlz7L-1" value="&lt;div&gt;Create&lt;/div&gt;&lt;div&gt;HTTP POST /api/book&lt;br&gt;&lt;/div&gt;&lt;div&gt;BookTitle in the body&lt;br&gt;&lt;/div&gt;&lt;div&gt;return HTTP 202 Accepted&lt;/div&gt;&lt;div&gt;includes &#39;location&#39; header to redirect to &#39;GetStatus&#39; action&lt;br&gt;&lt;/div&gt;&lt;div&gt;return bookId&lt;br&gt;&lt;/div&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="120" y="200" width="380" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="3BECemAOmpxZgVmXlz7L-2" value="&lt;div&gt;GetStatus&lt;/div&gt;&lt;div&gt;HTTP /api/book/status/book_id&lt;/div&gt;&lt;div&gt;if the action is still pending returns HTTP 202 Accepted&lt;br&gt;&lt;/div&gt;&lt;div&gt;if the action finished returns HTTP 200 OK&lt;/div&gt;&lt;div&gt;if the book_id doesn&#39;t exist returns HTTP 404&lt;br&gt;&lt;/div&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="120" y="320" width="320" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="3BECemAOmpxZgVmXlz7L-3" value="&lt;div&gt;Download&lt;/div&gt;&lt;div&gt;HTTP GET /api/book/download/book_id&lt;/div&gt;&lt;div&gt;If the book doesn&#39;t exist returns HTTP 404&lt;/div&gt;&lt;div&gt;returns content as an MD-file and HTTP 200 OK code&lt;br&gt;&lt;/div&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="120" y="440" width="320" height="120" as="geometry" />
         </mxCell>
       </root>
     </mxGraphModel>
