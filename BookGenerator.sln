@@ -5,15 +5,26 @@ VisualStudioVersion = 17.5.33424.131
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{CC4CB7DA-DE42-42D5-B856-00E537115C77}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BookGenerator.Domain", "src\BookGenerator.Domain\BookGenerator.Domain.csproj", "{B670A540-9FF3-40C1-9A8C-46B4E47726AE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BookGenerator.Domain", "src\BookGenerator.Domain\BookGenerator.Domain.csproj", "{B670A540-9FF3-40C1-9A8C-46B4E47726AE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BookGenerator.Application", "src\BookGenerator.Application\BookGenerator.Application.csproj", "{9B047808-5129-4A5A-969F-E4B23319A71B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BookGenerator.Application", "src\BookGenerator.Application\BookGenerator.Application.csproj", "{9B047808-5129-4A5A-969F-E4B23319A71B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BookGenerator.Infrastructure", "src\BookGenerator.Infrastructure\BookGenerator.Infrastructure.csproj", "{8B2A1E24-C1E3-45BA-8141-DA301B99A30E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BookGenerator.Infrastructure", "src\BookGenerator.Infrastructure\BookGenerator.Infrastructure.csproj", "{8B2A1E24-C1E3-45BA-8141-DA301B99A30E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BookGenerator.Client", "src\BookGenerator.Client\BookGenerator.Client.csproj", "{8D29DEA5-0138-4073-AAD0-1BAE76CB67F9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BookGenerator.Client", "src\BookGenerator.Client\BookGenerator.Client.csproj", "{8D29DEA5-0138-4073-AAD0-1BAE76CB67F9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BookGenerator.WebApi", "src\BookGenerator.WebApi\BookGenerator.WebApi.csproj", "{E1F8D107-8D17-44C2-8737-BE91DFEBCD86}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BookGenerator.WebApi", "src\BookGenerator.WebApi\BookGenerator.WebApi.csproj", "{E1F8D107-8D17-44C2-8737-BE91DFEBCD86}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "docs", "docs", "{6B1FA2C6-9220-4145-AD63-4BD63E38090D}"
+	ProjectSection(SolutionItems) = preProject
+		docs\BookGenerator.drawio = docs\BookGenerator.drawio
+		docs\Readme.md = docs\Readme.md
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{D5C50A88-E792-40F9-94CF-F3ECCF9BDF97}"
+	ProjectSection(SolutionItems) = preProject
+		README.md = README.md
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
