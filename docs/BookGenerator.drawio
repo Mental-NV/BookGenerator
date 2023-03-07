@@ -1,4 +1,4 @@
-<mxfile host="app.diagrams.net" modified="2023-03-07T22:14:40.295Z" agent="5.0 (Windows)" etag="RB8jAkSo3CF1E5yu_scx" version="21.0.2" type="github" pages="3">
+<mxfile host="app.diagrams.net" modified="2023-03-07T22:31:56.020Z" agent="5.0 (Windows)" etag="_Rx-VBvqIEo6VIq_er_g" version="21.0.2" type="github" pages="3">
   <diagram name="UI" id="D-m7faE2fxigUxJRYWDk">
     <mxGraphModel dx="1178" dy="804" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
       <root>
@@ -91,6 +91,9 @@
         </mxCell>
         <mxCell id="a2zKXnLKSTQ5C21Qi1wV-3" value="&lt;div&gt;Download a book&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;DownloadBookQuery(GUID bookId)&lt;/div&gt;&lt;div&gt;returns Book&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;DownloadBookHandler&amp;lt;DownloadBookQuery, Book&amp;gt;&lt;br&gt;&lt;/div&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
           <mxGeometry x="81" y="360" width="399" height="110" as="geometry" />
+        </mxCell>
+        <mxCell id="4ndkd1sxii6ES2-7fNK3-1" value="&lt;div&gt;IBookCreator&lt;/div&gt;&lt;div&gt;&lt;ul&gt;&lt;li&gt;Create(bookTitle): bookId&lt;/li&gt;&lt;li&gt;GetStatus(bookId): pending | ready&lt;/li&gt;&lt;li&gt;GetResult(bookId): Book&lt;/li&gt;&lt;/ul&gt;&lt;/div&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="480" y="40" width="320" height="90" as="geometry" />
         </mxCell>
       </root>
     </mxGraphModel>
