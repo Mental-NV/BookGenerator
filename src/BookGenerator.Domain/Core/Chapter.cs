@@ -1,4 +1,4 @@
-﻿namespace BookGenerator.Domain;
+﻿namespace BookGenerator.Domain.Core;
 
 public class Chapter
 {
