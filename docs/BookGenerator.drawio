@@ -1,4 +1,4 @@
-<mxfile host="app.diagrams.net" modified="2023-03-07T21:04:02.177Z" agent="5.0 (Windows)" etag="WU6dde1QgbMZqMrOuEjM" version="21.0.2" type="github">
+<mxfile host="app.diagrams.net" modified="2023-03-07T21:28:47.202Z" agent="5.0 (Windows)" etag="cmZn9hP2dE5r7qp5_Pby" version="21.0.2" type="github" pages="2">
   <diagram name="UI" id="D-m7faE2fxigUxJRYWDk">
     <mxGraphModel dx="1178" dy="804" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
       <root>
@@ -51,6 +51,20 @@
         </mxCell>
         <mxCell id="mBuUw854CCXQ41-mHmJW-18" value="&lt;font style=&quot;font-size: 19px;&quot;&gt;&lt;font style=&quot;font-size: 19px;&quot;&gt;Download the book&lt;/font&gt;&lt;/font&gt;" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=19;fontStyle=4;fillColor=none;fontColor=#0080ff;" vertex="1" parent="1">
           <mxGeometry x="270" y="1010" width="180" height="30" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+  <diagram id="IaL1wFKg97MZ-PiZELy0" name="WebAPI">
+    <mxGraphModel dx="1178" dy="804" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="UQ9ZrAOwguX3fRSOWbUr-1" value="BookController" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="120" y="50" width="240" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="UQ9ZrAOwguX3fRSOWbUr-2" value="&lt;ul&gt;&lt;li&gt;Create(bookTitle)&lt;/li&gt;&lt;li&gt;GetStatus(bookId)&lt;/li&gt;&lt;li&gt;Download(bookId)&lt;br&gt;&lt;/li&gt;&lt;/ul&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="120" y="80" width="240" height="50" as="geometry" />
         </mxCell>
       </root>
     </mxGraphModel>
