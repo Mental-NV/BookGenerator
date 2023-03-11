@@ -57,7 +57,7 @@ public class BookController : ControllerBase
             return BadRequest(result.Error);
         }
 
-        BookFile file = converter.Convert(result.Value, BookFileFormat.Text);
+        BookFile file = converter.ToTextFile(result.Value);
 
         return File(file.Content, file.ContentType, file.Name, false);
     }
