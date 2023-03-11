@@ -17,6 +17,6 @@ internal sealed class CreateBookCommandHandler : ICommandHandler<CreateBookComma
     public async Task<Result<CreateBookResponse>> Handle(CreateBookCommand request, CancellationToken cancellationToken)
     {
         Guid id = await bookCreater.CreateAsync(request.BookTitle);
-        return new CreateBookResponse() {  Id = id };
+        return new CreateBookResponse(id);
     }
 }

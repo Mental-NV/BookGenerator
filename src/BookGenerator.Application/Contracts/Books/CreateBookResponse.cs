@@ -1,6 +1,3 @@
 ﻿namespace BookGenerator.Application.Contracts.Books;
 
-public sealed class CreateBookResponse
-{
-    public Guid Id { get; set; }
-}
+public sealed record CreateBookResponse(Guid BookId);
