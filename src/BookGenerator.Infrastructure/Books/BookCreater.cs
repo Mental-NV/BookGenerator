@@ -15,7 +15,7 @@ public class BookCreater : IBookCreater
         books[id] = pendingBook;
         var task = new Task(async () =>
         {
-            await Task.Delay(60000);
+            await Task.Delay(30000);
             Book book = new Book()
             {
                 Title = bookTitle,
