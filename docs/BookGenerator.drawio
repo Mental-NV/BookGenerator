@@ -1,4 +1,4 @@
-<mxfile host="app.diagrams.net" modified="2023-03-07T22:57:21.469Z" agent="5.0 (Windows)" etag="fFnYqm_USHMZmM8TW5Uj" version="21.0.2" type="github" pages="4">
+<mxfile host="app.diagrams.net" modified="2023-03-11T23:51:05.144Z" agent="5.0 (Windows)" etag="p1YInKAjURG8Ja3pfqGh" version="21.0.2" type="github" pages="4">
   <diagram name="UI" id="D-m7faE2fxigUxJRYWDk">
     <mxGraphModel dx="1178" dy="804" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
       <root>
@@ -83,13 +83,13 @@
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
-        <mxCell id="EHExfu1BgeMdJUrSBos5-1" value="&lt;div&gt;IBookCreator&lt;/div&gt;&lt;div&gt;&lt;ul&gt;&lt;li&gt;Create(bookTitle): bookId&lt;/li&gt;&lt;li&gt;GetStatus(bookId): pending | ready&lt;/li&gt;&lt;li&gt;GetResult(bookId): Book&lt;/li&gt;&lt;/ul&gt;&lt;/div&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+        <mxCell id="EHExfu1BgeMdJUrSBos5-1" value="&lt;div&gt;IBookCreator&lt;/div&gt;&lt;div&gt;&lt;ul&gt;&lt;li&gt;Create(bookTitle): bookId&lt;/li&gt;&lt;li&gt;GetStatus(bookId): pending | ready&lt;/li&gt;&lt;li&gt;GetResult(bookId): Book&lt;/li&gt;&lt;/ul&gt;&lt;/div&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;" parent="1" vertex="1">
           <mxGeometry x="510" y="40" width="320" height="90" as="geometry" />
         </mxCell>
-        <mxCell id="NezeQ6evQN0y_eFioH9t-1" value="&lt;div&gt;Book&lt;/div&gt;&lt;div&gt;&lt;ul&gt;&lt;li&gt;Id: GUID&lt;br&gt;&lt;/li&gt;&lt;li&gt;Title: string&lt;br&gt;&lt;/li&gt;&lt;li&gt;Chapters: Chapter&lt;br&gt;&lt;/li&gt;&lt;/ul&gt;&lt;/div&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+        <mxCell id="NezeQ6evQN0y_eFioH9t-1" value="&lt;div&gt;Book&lt;/div&gt;&lt;div&gt;&lt;ul&gt;&lt;li&gt;Id: GUID&lt;br&gt;&lt;/li&gt;&lt;li&gt;Title: string&lt;br&gt;&lt;/li&gt;&lt;li&gt;Chapters: Chapter&lt;br&gt;&lt;/li&gt;&lt;/ul&gt;&lt;/div&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;" parent="1" vertex="1">
           <mxGeometry x="40" y="40" width="280" height="120" as="geometry" />
         </mxCell>
-        <mxCell id="NezeQ6evQN0y_eFioH9t-2" value="&lt;div&gt;Chapter&lt;/div&gt;&lt;div&gt;&lt;ul&gt;&lt;li&gt;Id: int&lt;br&gt;&lt;/li&gt;&lt;li&gt;Title: string&lt;br&gt;&lt;/li&gt;&lt;li&gt;Content: string&lt;br&gt;&lt;/li&gt;&lt;/ul&gt;&lt;/div&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+        <mxCell id="NezeQ6evQN0y_eFioH9t-2" value="&lt;div&gt;Chapter&lt;/div&gt;&lt;div&gt;&lt;ul&gt;&lt;li&gt;Id: int&lt;br&gt;&lt;/li&gt;&lt;li&gt;Title: string&lt;br&gt;&lt;/li&gt;&lt;li&gt;Content: string&lt;br&gt;&lt;/li&gt;&lt;/ul&gt;&lt;/div&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;" parent="1" vertex="1">
           <mxGeometry x="40" y="200" width="280" height="120" as="geometry" />
         </mxCell>
       </root>
@@ -106,7 +106,7 @@
         <mxCell id="a2zKXnLKSTQ5C21Qi1wV-2" value="&lt;div&gt;Get status&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;GetBookStatusQuery(GUID bookId)&lt;/div&gt;&lt;div&gt;returns pending | ready&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;GetBookStatusHandler&amp;lt;GetBookStatusQuery, Status&amp;gt;&lt;br&gt;&lt;/div&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;" parent="1" vertex="1">
           <mxGeometry x="81" y="200" width="399" height="110" as="geometry" />
         </mxCell>
-        <mxCell id="a2zKXnLKSTQ5C21Qi1wV-3" value="&lt;div&gt;Download a book&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;DownloadBookQuery(GUID bookId)&lt;/div&gt;&lt;div&gt;returns Book&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;DownloadBookHandler&amp;lt;DownloadBookQuery, Book&amp;gt;&lt;br&gt;&lt;/div&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;" parent="1" vertex="1">
+        <mxCell id="a2zKXnLKSTQ5C21Qi1wV-3" value="&lt;div&gt;Get a book&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;GetBookQuery(GUID bookId)&lt;/div&gt;&lt;div&gt;returns Book&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;GetBookHandler&amp;lt;DownloadBookQuery, Book&amp;gt;&lt;br&gt;&lt;/div&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;" parent="1" vertex="1">
           <mxGeometry x="81" y="360" width="399" height="110" as="geometry" />
         </mxCell>
       </root>
