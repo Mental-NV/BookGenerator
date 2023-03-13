@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace BookGenerator.Client.ApiServices;
 
-internal interface IBookApiService
+public interface IBookApiService
 {
     Task<CreateBookResponse> CreateAsync(string bookTitle);
     Task<GetStatusResponse> GetStatusAsync(Guid bookId);
