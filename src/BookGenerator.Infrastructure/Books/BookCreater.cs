@@ -6,21 +6,22 @@ namespace BookGenerator.Infrastructure.Books;
 
 public class BookCreater : IBookCreater
 {
-    private readonly static Book pendingBook = new Book();
     private readonly static ConcurrentDictionary<Guid, Book> books = new ConcurrentDictionary<Guid, Book>();
 
     public async Task<Guid> CreateAsync(string bookTitle)
     {
         Guid id = Guid.NewGuid();
-        books[id] = pendingBook;
+        Book book = new Book()
+        {
+            Title = bookTitle,
+            Id = id,
+            Status = BookCreatingStatus.Pending
+        };
+        books[id] = book;
         var task = new Task(async () =>
         {
-            await Task.Delay(30000);
-            Book book = new Book()
-            {
-                Title = bookTitle,
-                Id = id
-            };
+            await Task.Delay(15000);
+
             for (int i = 0; i < 10; i++)
             {
                 book.Chapters.Add(new Chapter()
@@ -29,7 +30,7 @@ public class BookCreater : IBookCreater
                     Content = $"Content {i + 1}"
                 });
             }
-            books[id] = book;
+            book.Status = BookCreatingStatus.Completed;
         });
         task.Start();
         return await Task.FromResult(id);
@@ -41,23 +42,15 @@ public class BookCreater : IBookCreater
         return await Task.FromResult(book);
     }
 
-    public async Task<BookCreatingStatus> GetStatusAsync(Guid bookId)
+    public async Task<BookStatus> GetStatusAsync(Guid bookId)
     {
-        if (books.TryGetValue(bookId, out Book book) && book != null)
+        if (books.TryGetValue(bookId, out Book book))
         {
-            if (book == pendingBook)
-            {
-                return await Task.FromResult(BookCreatingStatus.Pedning);
-            }
-            
-            if (!string.IsNullOrEmpty(book.Title) && book.Chapters.Count > 0)
-            {
-                return await Task.FromResult(BookCreatingStatus.Completed);
-            }
-
-            return await Task.FromResult(BookCreatingStatus.Failed);
+            return await Task.FromResult(new BookStatus() { Status = book.Status, Title = book.Title });
         }
-        
-        return await Task.FromResult(BookCreatingStatus.None);
+        else
+        {
+            return null;
+        }
     }
 }

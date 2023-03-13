@@ -43,6 +43,11 @@ public class BookController : ControllerBase
         GetStatusByIdQuery query = new GetStatusByIdQuery(bookId);
         Result<GetStatusResponse> result = await sender.Send(query, cancellationToken);
 
+        if (result.IsFailure && result.Error.Code.Contains(".NotFound", StringComparison.OrdinalIgnoreCase))
+        {
+            return NotFound(result.Error);
+        }
+
         return result.IsSuccess ? Ok(result.Value) : BadRequest(result.Error);
     }
 
@@ -51,6 +56,11 @@ public class BookController : ControllerBase
     {
         GetBookByIdQuery query = new GetBookByIdQuery(bookId);
         var result = await sender.Send(query, cancellationToken);
+
+        if (result.IsFailure && result.Error.Code.Contains(".NotFound", StringComparison.OrdinalIgnoreCase))
+        {
+            return NotFound(result.Error);
+        }
 
         if (result.IsFailure)
         {

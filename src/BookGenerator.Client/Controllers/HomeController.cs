@@ -34,14 +34,16 @@ public class HomeController : Controller
     }
 
     [HttpGet("Status/{bookId}")]
-    public IActionResult Status(Guid bookId)
+    public async Task<IActionResult> Status(Guid bookId)
     {
-        return View(new StatusViewModel() { BookId = bookId, BookTitle = "Not set"});
+        var status = await bookApiService.GetStatusAsync(bookId);
+        return View(new StatusViewModel() { BookId = bookId, BookTitle = status.BookTitle, Status = status.Status });
     }
 
     [HttpPost]
     public async Task<IActionResult> Generate(string bookTitle)
     {
+        ViewData["BookTitle"] = bookTitle;
         CreateBookResponse result = await bookApiService.CreateAsync(bookTitle);
         return RedirectToAction("Status", new { bookId = result.BookId });
     }

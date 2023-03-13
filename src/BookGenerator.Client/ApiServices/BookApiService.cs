@@ -20,17 +20,19 @@ public class BookApiService : BaseApiService, IBookApiService
 
     public async Task<CreateBookResponse> CreateAsync(string bookTitle)
     {
-        CreateBookResponse result = await this.PostAsync<CreateBookResponse, string>($"/api/book/", bookTitle);
+        CreateBookResponse result = await this.PostAsync<CreateBookResponse, string>($"/api/book", bookTitle);
         return result;
     }
 
     public async Task<BookFile> GetResult(Guid bookId)
     {
-        return await this.GetAsync<BookFile>($"/api/book/download/{bookId}");
+        var result = await this.GetAsync<BookFile>($"/api/book/download/{bookId}");
+        return result;
     }
 
     public async Task<GetStatusResponse> GetStatusAsync(Guid bookId)
     {
-        return await this.GetAsync<GetStatusResponse>("/api/book/");
+        var result = await this.GetAsync<GetStatusResponse>($"/api/book/{bookId}");
+        return result;
     }
 }

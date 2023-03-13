@@ -3,7 +3,7 @@
 public enum BookCreatingStatus
 {
     None,
-    Pedning,
+    Pending,
     Completed,
     Failed
 }

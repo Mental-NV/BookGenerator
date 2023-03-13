@@ -21,14 +21,14 @@ internal sealed class GetStatusByIdQueryHandler
         GetStatusByIdQuery request,
         CancellationToken cancellationToken)
     {
-        BookCreatingStatus result = await bookCreater.GetStatusAsync(request.BookId);
+        BookStatus result = await bookCreater.GetStatusAsync(request.BookId);
 
-        if (result == BookCreatingStatus.None)
+        if (result == null)
         {
-            return Result.Failure<GetStatusResponse>(new Error("BookStatus.NotFound", $"Book statis with id {request.BookId} has not found"));
+            return Result.Failure<GetStatusResponse>(new Error("BookStatus.NotFound", $"Book status with id {request.BookId} has not found"));
         }
 
-        var response = new GetStatusResponse(result);
+        var response = new GetStatusResponse(result.Status, result.Title);
         return response;
     }
 }
