@@ -34,3 +34,13 @@
     @Html.ActionLink("Edit", "Edit", new { /* id = Model.PrimaryKey */ }) |
     <a asp-action="Index">Back to List</a>
 </div>
+<script>
+    let status = '@Html.DisplayFor(model => model.Status)';
+    if (status == 'Pending')
+    {
+        console.log("reload after 10 seconds");
+        setTimeout(function () {
+            location.reload();
+        }, 10000);
+    }
+</script>
