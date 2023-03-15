@@ -69,7 +69,6 @@ public class BookController : ControllerBase
 
         BookFile file = converter.ToTextFile(result.Value);
 
-        // return File(file.Content, file.ContentType, file.Name, false);
         return Ok(file);
     }
 }
