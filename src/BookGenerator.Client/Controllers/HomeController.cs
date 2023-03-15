@@ -1,6 +1,7 @@
 ﻿using BookGenerator.Application.Contracts.Books;
 using BookGenerator.Client.ApiServices;
 using BookGenerator.Client.Models;
+using BookGenerator.Domain.Core;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Diagnostics;
@@ -22,22 +23,32 @@ public class HomeController : Controller
         return View();
     }
 
-    public IActionResult Privacy()
-    {
-        return View();
-    }
-
     [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
     public IActionResult Error()
     {
         return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
     }
 
+    [HttpGet("Download/{bookId}")]
+    public async Task<IActionResult> Download(Guid bookId)
+    {
+        BookFile bookFile = await bookApiService.GetResult(bookId);
+        GetStatusResponse status = await bookApiService.GetStatusAsync(bookId);
+        return View(new DownloadViewModel() { Book = bookFile, BookTitle = status.BookTitle });
+    }
+
     [HttpGet("Status/{bookId}")]
     public async Task<IActionResult> Status(Guid bookId)
     {
-        var status = await bookApiService.GetStatusAsync(bookId);
-        return View(new StatusViewModel() { BookId = bookId, BookTitle = status.BookTitle, Status = status.Status });
+        GetStatusResponse status = await bookApiService.GetStatusAsync(bookId);
+        if (status.Status == BookCreatingStatus.Completed)
+        {
+            return RedirectToAction("Download", new { bookId = bookId });
+        }
+        else
+        {
+            return View(new StatusViewModel() { BookId = bookId, BookTitle = status.BookTitle, Status = status.Status });
+        }
     }
 
     [HttpPost]

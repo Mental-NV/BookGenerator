@@ -1,0 +1,45 @@
+﻿@using System.Text.Json;
+@model BookGenerator.Client.Models.DownloadViewModel
+
+@{
+    ViewData["Title"] = "Download";
+}
+
+@{
+    string bookContentCS = JsonSerializer.Serialize(Model.Content);
+}
+
+<h1>Download</h1>
+
+<div>
+    <h4>DownloadViewModel</h4>
+    <hr />
+    <dl class="row">
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.BookTitle)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.BookTitle)
+        </dd>
+    </dl>
+</div>
+<div id="download-div">
+</div>
+<script>
+    const bookContent = @Html.Raw(bookContentCS);
+    const blob = new Blob([bookContent], { type: 'text/plain' });
+    const url = URL.createObjectURL(blob);
+
+    const anchor = document.createElement('a');
+    anchor.href = url;
+    anchor.download = '@Model.SafeFileName';
+    anchor.innerText = 'Download ' + '@Model.BookTitle';
+
+    let downloadDiv = document.getElementById('download-div');
+    downloadDiv.appendChild(anchor);
+    anchor.click();
+</script>
+<div>
+    @Html.ActionLink("Edit", "Edit", new { /* id = Model.PrimaryKey */ }) |
+    <a asp-action="Index">Back to List</a>
+</div>
