@@ -6,7 +6,12 @@ namespace BookGenerator.Infrastructure.Books;
 
 public class BookCreater : IBookCreater
 {
-    private readonly static ConcurrentDictionary<Guid, Book> books = new ConcurrentDictionary<Guid, Book>();
+    private readonly IBookRepository bookRepository;
+
+    public BookCreater(IBookRepository bookRepository)
+    {
+        this.bookRepository = bookRepository ?? throw new ArgumentNullException(nameof(bookRepository));
+    }
 
     public async Task<Guid> CreateAsync(string bookTitle)
     {
@@ -15,9 +20,9 @@ public class BookCreater : IBookCreater
         {
             Title = bookTitle,
             Id = id,
-            Status = BookCreatingStatus.Pending
+            Status = BookStatus.Pending
         };
-        books[id] = book;
+        await bookRepository.SetAsync(id, book);
         var task = new Task(async () =>
         {
             await Task.Delay(15000);
@@ -30,27 +35,10 @@ public class BookCreater : IBookCreater
                     Content = $"Content {i + 1}"
                 });
             }
-            book.Status = BookCreatingStatus.Completed;
+            book.Status = BookStatus.Completed;
+            await bookRepository.SetAsync(id, book);
         });
         task.Start();
         return await Task.FromResult(id);
-    }
-
-    public async Task<Book> GetResultAsync(Guid bookId)
-    {
-        books.TryGetValue(bookId, out Book book);
-        return await Task.FromResult(book);
-    }
-
-    public async Task<BookStatus> GetStatusAsync(Guid bookId)
-    {
-        if (books.TryGetValue(bookId, out Book book))
-        {
-            return await Task.FromResult(new BookStatus() { Status = book.Status, Title = book.Title });
-        }
-        else
-        {
-            return null;
-        }
     }
 }

@@ -41,7 +41,7 @@ public class HomeController : Controller
     public async Task<IActionResult> Status(Guid bookId)
     {
         GetStatusResponse status = await bookApiService.GetStatusAsync(bookId);
-        if (status.Status == BookCreatingStatus.Completed)
+        if (status.Status == BookStatus.Completed)
         {
             return RedirectToAction("Download", new { bookId = bookId });
         }

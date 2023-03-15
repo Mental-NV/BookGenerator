@@ -1,7 +1,9 @@
 ﻿namespace BookGenerator.Domain.Core;
 
-public class BookStatus
+public enum BookStatus
 {
-    public BookCreatingStatus Status { get; set; }
-    public string Title { get; set; }
+    None,
+    Pending,
+    Completed,
+    Failed
 }

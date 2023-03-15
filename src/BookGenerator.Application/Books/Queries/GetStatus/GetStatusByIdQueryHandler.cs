@@ -10,23 +10,29 @@ namespace BookGenerator.Application.Books.Queries.GetStatus;
 internal sealed class GetStatusByIdQueryHandler
     : IQueryHandler<GetStatusByIdQuery, GetStatusResponse>
 {
-    private readonly IBookCreater bookCreater;
+    private readonly IBookRepository bookRepository;
 
-    public GetStatusByIdQueryHandler(IBookCreater bookCreater)
+    public GetStatusByIdQueryHandler(IBookRepository bookRepository)
     {
-        this.bookCreater = bookCreater ?? throw new ArgumentNullException(nameof(bookCreater));
+        this.bookRepository = bookRepository ?? throw new ArgumentNullException(nameof(bookRepository));
     }
 
     public async Task<Result<GetStatusResponse>> Handle(
         GetStatusByIdQuery request,
         CancellationToken cancellationToken)
     {
-        BookStatus result = await bookCreater.GetStatusAsync(request.BookId);
-
-        if (result == null)
+        Book book = await bookRepository.GetAsync(request.BookId);
+        if (book == null)
         {
-            return Result.Failure<GetStatusResponse>(new Error("BookStatus.NotFound", $"Book status with id {request.BookId} has not found"));
+            return Result.Failure<GetStatusResponse>(new Error("Book.NotFound", $"Book with id {request.BookId} has not found"));
         }
+
+        BookOrder result = new BookOrder()
+        {
+            BookId = book.Id,
+            Title = book.Title,
+            Status = book.Status
+        };
 
         var response = new GetStatusResponse(result.Status, result.Title);
         return response;
