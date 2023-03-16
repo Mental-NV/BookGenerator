@@ -4,11 +4,11 @@ using System.Collections.Concurrent;
 
 namespace BookGenerator.Infrastructure.Books;
 
-public class BookCreater : IBookCreater
+public class BookCreaterInMemory : IBookCreater
 {
     private readonly IBookRepository bookRepository;
 
-    public BookCreater(IBookRepository bookRepository)
+    public BookCreaterInMemory(IBookRepository bookRepository)
     {
         this.bookRepository = bookRepository ?? throw new ArgumentNullException(nameof(bookRepository));
     }
