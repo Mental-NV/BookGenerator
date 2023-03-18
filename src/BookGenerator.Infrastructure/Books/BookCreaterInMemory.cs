@@ -20,9 +20,16 @@ public class BookCreaterInMemory : IBookCreater
         {
             Title = bookTitle,
             Id = id,
-            Status = BookStatus.Pending
         };
         await bookRepository.SetAsync(id, book);
+        BookProgress progress = new BookProgress()
+        {
+            Progress = 5,
+            BookId = id,
+            Status = BookStatus.Pending,
+            Title = bookTitle
+        };
+        await bookRepository.SetProgressAsync(id, progress);
         var task = new Task(async () =>
         {
             await Task.Delay(15000);
@@ -35,8 +42,10 @@ public class BookCreaterInMemory : IBookCreater
                     Content = $"Content {i + 1}"
                 });
             }
-            book.Status = BookStatus.Completed;
             await bookRepository.SetAsync(id, book);
+            progress.Progress = 100;
+            progress.Status = BookStatus.Completed;
+            await bookRepository.SetProgressAsync(id, progress);
         });
         task.Start();
         return await Task.FromResult(id);

@@ -21,20 +21,13 @@ internal sealed class GetStatusByIdQueryHandler
         GetStatusByIdQuery request,
         CancellationToken cancellationToken)
     {
-        Book book = await bookRepository.GetAsync(request.BookId);
-        if (book == null)
+        BookProgress result = await bookRepository.GetProgressAsync(request.BookId);
+        if (result == null)
         {
-            return Result.Failure<GetStatusResponse>(new Error("Book.NotFound", $"Book with id {request.BookId} has not found"));
+            return Result.Failure<GetStatusResponse>(new Error("BookProgress.NotFound", $"Book progress with id {request.BookId} has not found"));
         }
 
-        BookOrder result = new BookOrder()
-        {
-            BookId = book.Id,
-            Title = book.Title,
-            Status = book.Status
-        };
-
-        var response = new GetStatusResponse(result.Status, result.Title);
+        var response = new GetStatusResponse(result.Title, result.Status, result.Progress);
         return response;
     }
 }

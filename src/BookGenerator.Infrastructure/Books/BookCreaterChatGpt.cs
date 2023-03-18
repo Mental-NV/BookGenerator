@@ -25,10 +25,17 @@ public class BookCreaterChatGpt : IBookCreater
         Book book = new Book()
         {
             Title = bookTitle,
-            Id = id,
-            Status = BookStatus.Pending
+            Id = id
         };
         await bookRepository.SetAsync(id, book);
+        BookProgress progress = new BookProgress()
+        {
+            BookId = id,
+            Progress = 5,
+            Status = BookStatus.Pending,
+            Title = bookTitle
+        };
+        await bookRepository.SetProgressAsync(id, progress);
 
         var task = new Task(async () =>
         {
@@ -46,12 +53,18 @@ public class BookCreaterChatGpt : IBookCreater
                 {
                     string tableOfContent = completionResult.Choices.First().Text;
                     Console.WriteLine(tableOfContent);
+                    progress.Progress = 10;
+                    await bookRepository.SetProgressAsync(id, progress);
 
                     IEnumerable<string> chapters = tableOfContent.Split("\n").Where(chapter => chapter.Contains("Chapter ", StringComparison.InvariantCultureIgnoreCase));
                     int i = 0;
                     foreach (string chapter in chapters)
                     {
+
                         i++;
+                        int progressValue = 10 + (int)((85.0 * i) / chapters.Count());
+                        progress.Progress = progressValue;
+                        await bookRepository.SetProgressAsync(id, progress);
                         while (true)
                         {
                             var chapterCompletion = await openAIService.Completions.CreateCompletion(
@@ -66,6 +79,7 @@ public class BookCreaterChatGpt : IBookCreater
                             {
                                 string text = chapterCompletion.Choices.First().Text;
                                 book.Chapters.Add(new Chapter() { Content = text, Title = chapter, Id = i });
+                                await bookRepository.SetAsync(id, book);
                                 break;
                             }
                         }
@@ -73,8 +87,10 @@ public class BookCreaterChatGpt : IBookCreater
                     break;
                 }
             }
-            book.Status = BookStatus.Completed;
             await bookRepository.SetAsync(id, book);
+            progress.Progress = 100;
+            progress.Status = BookStatus.Completed;
+            await bookRepository.SetProgressAsync(id, progress);
         });
         task.Start();
         return await Task.FromResult(id);

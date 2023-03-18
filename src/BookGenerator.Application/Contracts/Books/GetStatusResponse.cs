@@ -2,4 +2,4 @@
 
 namespace BookGenerator.Application.Contracts.Books;
 
-public sealed record GetStatusResponse(BookStatus Status, string BookTitle);
+public sealed record GetStatusResponse(string BookTitle, BookStatus Status, int Progress);
