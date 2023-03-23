@@ -2,16 +2,24 @@
 using BookGenerator.Infrastructure.Books;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using OpenAI.GPT3.Extensions;
 
 namespace BookGenerator.Infrastructure;
 public static class DependencyInjection
 {
-    public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
+    public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration configuration, IHostEnvironment environment)
     {
+        if (environment.IsProduction())
+        {
+            services.AddScoped<IBookCreater, BookCreaterChatGpt>();
+        }
+        else
+        {
+            services.AddScoped<IBookCreater, BookCreaterInMemory>();
+        }
         services.AddOpenAIChatGpt(configuration);
         services.AddScoped<IBookRepository, BookRepositoryInMemory>();
-        services.AddScoped<IBookCreater, BookCreaterChatGpt>();
         services.AddScoped<IBookConverter, BookConverter>();
         return services;
     }

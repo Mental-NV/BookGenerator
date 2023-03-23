@@ -26,14 +26,20 @@
 <div id="download-div">
 </div>
 <script>
+    function decodeHtmlEntities(str) {
+        return str.replace(/&#x([\da-fA-F]+);/g, (match, codePoint) => {
+            return String.fromCodePoint(parseInt(codePoint, 16));
+        });
+    }
+
     const bookContent = @Html.Raw(bookContentCS);
     const blob = new Blob([bookContent], { type: 'text/plain' });
     const url = URL.createObjectURL(blob);
 
     const anchor = document.createElement('a');
     anchor.href = url;
-    anchor.download = '@Model.SafeFileName';
-    anchor.innerText = 'Download ' + '@Model.BookTitle';
+    anchor.download = decodeHtmlEntities('@Model.SafeFileName');
+    anchor.innerHTML = 'Download ' + '@Model.BookTitle';
 
     let downloadDiv = document.getElementById('download-div');
     downloadDiv.appendChild(anchor);
