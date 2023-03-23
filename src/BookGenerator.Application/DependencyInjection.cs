@@ -1,4 +1,6 @@
-﻿using FluentValidation;
+﻿using BookGenerator.Application.Behaviours;
+using FluentValidation;
+using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace BookGenerator.Application;
@@ -12,7 +14,9 @@ public static class DependencyInjection
             configuration.RegisterServicesFromAssembly(
                 assembly));
 
-        services.AddValidatorsFromAssembly(assembly);
+        services.AddScoped(typeof(IPipelineBehavior<,>), typeof(ValidationPipelineBehaviour<,>));
+        services.AddValidatorsFromAssembly(assembly, includeInternalTypes: true);
+
 
         return services;
     }

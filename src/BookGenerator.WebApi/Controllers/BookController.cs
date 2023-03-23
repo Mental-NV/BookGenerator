@@ -12,29 +12,28 @@ namespace BookGenerator.WebApi.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
-public class BookController : ControllerBase
+public class BookController : ApiController
 {
-    private readonly ISender sender;
     private readonly IBookConverter converter;
 
     public BookController(ISender sender, IBookConverter converter)
+        : base(sender)
     {
-        this.sender = sender ?? throw new ArgumentNullException(nameof(sender));
         this.converter = converter ?? throw new ArgumentNullException(nameof(converter));
     }
 
     [HttpPost]
     public async Task<IActionResult> Create([FromBody] string title, CancellationToken cancellationToken)
     {
-        if (string.IsNullOrWhiteSpace(title))
-        {
-            throw new ArgumentException($"'{nameof(title)}' cannot be null or whitespace.", nameof(title));
-        }
-
         var command = new CreateBookCommand(title);
         Result<CreateBookResponse> result = await sender.Send(command, cancellationToken);
 
-        return result.IsSuccess ? Ok(result.Value) : BadRequest(result.Error);
+        if (result.IsFailure)
+        {
+            return HandleFailure(result);
+        }
+
+        return Ok(result.Value);
     }
 
     [HttpGet("{bookId}")]
@@ -48,7 +47,12 @@ public class BookController : ControllerBase
             return NotFound(result.Error);
         }
 
-        return result.IsSuccess ? Ok(result.Value) : BadRequest(result.Error);
+        if (result.IsFailure)
+        {
+            return HandleFailure(result);
+        }
+
+        return Ok(result.Value);
     }
 
     [HttpGet("download/{bookId}")]
@@ -64,7 +68,7 @@ public class BookController : ControllerBase
 
         if (result.IsFailure)
         {
-            return BadRequest(result.Error);
+            return HandleFailure(result);
         }
 
         BookFile file = converter.ToTextFile(result.Value);
