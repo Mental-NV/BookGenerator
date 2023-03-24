@@ -8,15 +8,15 @@ using OpenAI.GPT3.Extensions;
 namespace BookGenerator.Infrastructure;
 public static class DependencyInjection
 {
-    public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration configuration, IHostEnvironment environment)
+    public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
     {
-        if (environment.IsProduction())
+        if (string.Equals(configuration["Model"], "Test"))
         {
-            services.AddScoped<IBookCreater, BookCreaterChatGpt>();
+            services.AddScoped<IBookCreater, BookCreaterInMemory>();
         }
         else
         {
-            services.AddScoped<IBookCreater, BookCreaterInMemory>();
+            services.AddScoped<IBookCreater, BookCreaterChatGpt>();
         }
         services.AddOpenAIChatGpt(configuration);
         services.AddScoped<IBookRepository, BookRepositoryInMemory>();
