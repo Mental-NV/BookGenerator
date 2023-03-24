@@ -42,11 +42,6 @@ public class BookController : ApiController
         GetStatusByIdQuery query = new GetStatusByIdQuery(bookId);
         Result<GetStatusResponse> result = await sender.Send(query, cancellationToken);
 
-        if (result.IsFailure && result.Error.Code.Contains(".NotFound", StringComparison.OrdinalIgnoreCase))
-        {
-            return NotFound(result.Error);
-        }
-
         if (result.IsFailure)
         {
             return HandleFailure(result);
@@ -60,11 +55,6 @@ public class BookController : ApiController
     {
         GetBookByIdQuery query = new GetBookByIdQuery(bookId);
         var result = await sender.Send(query, cancellationToken);
-
-        if (result.IsFailure && result.Error.Code.Contains(".NotFound", StringComparison.OrdinalIgnoreCase))
-        {
-            return NotFound(result.Error);
-        }
 
         if (result.IsFailure)
         {

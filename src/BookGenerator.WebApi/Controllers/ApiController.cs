@@ -22,9 +22,16 @@ namespace BookGenerator.WebApi.Controllers
                 IValidationResult validationResult => 
                     BadRequest(
                         CreateProblemDetails(
-                            "Validation Error", StatusCodes.Status400BadRequest,
+                            "Validation Error",
+                            StatusCodes.Status400BadRequest,
                             result.Error,
                             validationResult.Errors)),
+                { Error.Code: string code } when code.EndsWith(".NotFound", StringComparison.OrdinalIgnoreCase) =>
+                    NotFound(
+                        CreateProblemDetails(
+                            "Not found",
+                            StatusCodes.Status404NotFound,
+                            result.Error)),
                 _ =>
                     BadRequest(
                         CreateProblemDetails(

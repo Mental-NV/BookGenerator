@@ -1,4 +1,5 @@
-﻿using System.Net.Http;
+﻿using Microsoft.AspNetCore.Mvc;
+using System.Net.Http;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
@@ -64,7 +65,8 @@ public abstract class BaseApiService
     private async Task<HttpResponseMessage> GetAsyncInternal(string url)
     {
         var response = await this.httpClient.GetAsync(url).ConfigureAwait(false);
-        return response.EnsureSuccessStatusCode();
+        await HandleErrors(response);
+        return response;
     }
 
     /// <summary>
@@ -76,6 +78,17 @@ public abstract class BaseApiService
     private async Task<HttpResponseMessage> PostAsyncInternal(string url, HttpContent content)
     {
         var response = await this.httpClient.PostAsync(url, content).ConfigureAwait(false);
-        return response.EnsureSuccessStatusCode();
+        await HandleErrors(response);
+        return response;
+    }
+
+    private static async Task HandleErrors(HttpResponseMessage response)
+    {
+        if (!response.IsSuccessStatusCode)
+        {
+            string content = await response.Content.ReadAsStringAsync();
+            var problemDetails = JsonSerializer.Deserialize<ProblemDetails>(content);
+            throw new ApiException(problemDetails);
+        }
     }
 }
