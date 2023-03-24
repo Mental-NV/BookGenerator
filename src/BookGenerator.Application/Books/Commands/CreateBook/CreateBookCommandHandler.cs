@@ -5,7 +5,7 @@ using BookGenerator.Domain.Services;
 
 namespace BookGenerator.Application.Books.Commands.CreateBook;
 
-internal sealed class CreateBookCommandHandler : ICommandHandler<CreateBookCommand, CreateBookResponse>
+public sealed class CreateBookCommandHandler : ICommandHandler<CreateBookCommand, CreateBookResponse>
 {
     private readonly IBookCreater bookCreater;
 
