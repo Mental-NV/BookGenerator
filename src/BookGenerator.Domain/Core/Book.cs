@@ -1,8 +1,25 @@
-﻿namespace BookGenerator.Domain.Core;
+﻿using BookGenerator.Domain.Primitives;
 
-public class Book
+namespace BookGenerator.Domain.Core;
+
+public class Book : Entity
 {
-    public Guid Id { get; set; }
+    public Book(string title)
+        : base(Guid.NewGuid())
+    {
+        this.Title = title;
+    }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="Book"/> class.
+    /// </summary>
+    /// <remarks>
+    /// Required by EF Core.
+    /// </remarks>
+    private Book()
+    { 
+    }
+
     public string Title { get; set; }
-    public List<Chapter> Chapters { get; set; } = new List<Chapter>();
+    public virtual List<Chapter> Chapters { get; set; } = new List<Chapter>();
 }

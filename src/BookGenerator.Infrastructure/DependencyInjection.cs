@@ -19,7 +19,6 @@ public static class DependencyInjection
             services.AddScoped<IBookCreater, BookCreaterChatGpt>();
         }
         services.AddOpenAIChatGpt(configuration);
-        services.AddScoped<IBookRepository, BookRepositoryInMemory>();
         services.AddScoped<IBookConverter, BookConverter>();
         return services;
     }

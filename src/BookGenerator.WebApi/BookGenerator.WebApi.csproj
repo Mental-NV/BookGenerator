@@ -6,12 +6,17 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="6.0.15">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.2.3" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\BookGenerator.Application\BookGenerator.Application.csproj" />
     <ProjectReference Include="..\BookGenerator.Infrastructure\BookGenerator.Infrastructure.csproj" />
+    <ProjectReference Include="..\BookGenerator.Persistence\BookGenerator.Persistence.csproj" />
   </ItemGroup>
 
 </Project>

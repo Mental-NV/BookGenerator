@@ -1,11 +1,13 @@
 using BookGenerator.Application;
 using BookGenerator.Infrastructure;
+using BookGenerator.Persistence;
 
 var builder = WebApplication.CreateBuilder(args);
-// Add services to the container.
+
 builder.Services
     .AddApplication()
-    .AddInfrastructure(builder.Configuration);
+    .AddInfrastructure(builder.Configuration)
+    .AddPersistence(builder.Configuration);
 
 builder.Services
     .AddControllers()
@@ -15,7 +17,6 @@ builder.Services
     });
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-
 
 var app = builder.Build();
 

@@ -5,7 +5,12 @@ namespace BookGenerator.Domain.Services;
 public interface IBookRepository
 {
     Task<Book> GetAsync(Guid bookId);
-    Task SetAsync(Guid bookId, Book newBook);
-    Task SetProgressAsync(Guid bookId, BookProgress bookProgress);
+    Task InsertAsync(Book book);
+    Task UpdateAsync(Book book);
+    Task InsertProgressAsync(BookProgress bookProgress);
+    Task UpdateProgressAsync(BookProgress bookProgress);
     Task<BookProgress> GetProgressAsync(Guid bookId);
+    Task InsertChapterAsync(Chapter chapter);
+    Task UpdateChapterAsync(Chapter chapter);
+    Task<Chapter> GetChapterAsync(Guid chapterId);
 }

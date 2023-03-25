@@ -1,5 +1,6 @@
 ﻿using BookGenerator.Domain.Core;
 using BookGenerator.Domain.Services;
+using Microsoft.Extensions.DependencyInjection;
 using System.Collections.Concurrent;
 
 namespace BookGenerator.Infrastructure.Books;
@@ -7,47 +8,52 @@ namespace BookGenerator.Infrastructure.Books;
 public class BookCreaterInMemory : IBookCreater
 {
     private readonly IBookRepository bookRepository;
+    private readonly IServiceScopeFactory scopeFactory;
 
-    public BookCreaterInMemory(IBookRepository bookRepository)
+    public BookCreaterInMemory(IBookRepository bookRepository, IServiceScopeFactory scopeFactory)
     {
         this.bookRepository = bookRepository ?? throw new ArgumentNullException(nameof(bookRepository));
+        this.scopeFactory = scopeFactory;
     }
 
     public async Task<Guid> CreateAsync(string bookTitle)
     {
-        Guid id = Guid.NewGuid();
-        Book book = new Book()
-        {
-            Title = bookTitle,
-            Id = id,
-        };
-        await bookRepository.SetAsync(id, book);
+        Book book = new Book(bookTitle);
+        await bookRepository.InsertAsync(book);
         BookProgress progress = new BookProgress()
         {
             Progress = 5,
-            BookId = id,
+            BookId = book.Id,
             Status = BookStatus.Pending,
             Title = bookTitle
         };
-        await bookRepository.SetProgressAsync(id, progress);
+        await bookRepository.InsertProgressAsync(progress);
         var task = new Task(async () =>
         {
             await Task.Delay(15000);
-
-            for (int i = 0; i < 10; i++)
+            using (var scope = scopeFactory.CreateScope())
             {
-                book.Chapters.Add(new Chapter()
+                var scopedBookRepository = scope.ServiceProvider.GetRequiredService<IBookRepository>();
+                
+                for (int i = 0; i < 10; i++)
                 {
-                    Title = $"Chapter {i + 1}",
-                    Content = $"Content {i + 1}"
-                });
+                    await scopedBookRepository.InsertChapterAsync(new Chapter()
+                    {
+                        Order = i + 1,
+                        Title = $"Chapter {i + 1}",
+                        Content = $"Content {i + 1}",
+                        BookId = book.Id
+                    });
+                }
+
+                BookProgress scopedBookProgress = await scopedBookRepository.GetProgressAsync(book.Id);
+                scopedBookProgress.Progress = 100;
+                scopedBookProgress.Status = BookStatus.Completed;
+                await scopedBookRepository.UpdateProgressAsync(scopedBookProgress);
             }
-            await bookRepository.SetAsync(id, book);
-            progress.Progress = 100;
-            progress.Status = BookStatus.Completed;
-            await bookRepository.SetProgressAsync(id, progress);
+
         });
         task.Start();
-        return await Task.FromResult(id);
+        return await Task.FromResult(book.Id);
     }
 }
