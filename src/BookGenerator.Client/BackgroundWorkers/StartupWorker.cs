@@ -15,7 +15,7 @@ namespace BookGenerator.Client.BackgroundWorkers
 
         public StartupWorker(IBookApiService bookApi)
         {
-            this.bookApi = bookApi ?? throw new System.ArgumentNullException(nameof(bookApi));
+            this.bookApi = bookApi ?? throw new ArgumentNullException(nameof(bookApi));
         }
 
         /// <summary>
