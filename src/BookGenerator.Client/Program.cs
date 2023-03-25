@@ -1,4 +1,5 @@
 using BookGenerator.Client.ApiServices;
+using BookGenerator.Client.BackgroundWorkers;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -8,7 +9,8 @@ using System;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services
-    .AddScoped<IBookApiService, BookApiService>();
+    .AddSingleton<IBookApiService, BookApiService>()
+    .AddHostedService<StartupWorker>();
 
 builder.Services
     .AddHttpClient("BookApiClient", client =>
