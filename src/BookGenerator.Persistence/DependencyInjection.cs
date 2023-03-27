@@ -1,4 +1,5 @@
-﻿using BookGenerator.Domain.Services;
+﻿using BookGenerator.Application.Abstractions.Data;
+using BookGenerator.Domain.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -9,8 +10,10 @@ public static class DependencyInjection
 {
     public static IServiceCollection AddPersistence(this IServiceCollection services, IConfiguration configuration)
     {
-        services.AddDbContext<BookContext>(options =>
+        services.AddDbContext<BookDbContext>(options =>
             options.UseSqlServer(configuration["BOOKGENERATOR_CONNECTIONSTRING"]));
+        services.AddScoped<IUnitOfWork, BookDbContext>();
+
         if (string.Equals(configuration["BookRepository"], "Test", StringComparison.OrdinalIgnoreCase))
         {
             services.AddScoped<IBookRepository, BookRepositoryInMemory>();

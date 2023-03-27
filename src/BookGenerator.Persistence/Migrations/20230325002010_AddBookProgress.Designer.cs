@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace BookGenerator.Persistence.Migrations
 {
-    [DbContext(typeof(BookContext))]
+    [DbContext(typeof(BookDbContext))]
     [Migration("20230325002010_AddBookProgress")]
     partial class AddBookProgress
     {

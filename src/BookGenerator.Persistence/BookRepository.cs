@@ -6,9 +6,9 @@ namespace BookGenerator.Persistence;
 
 public class BookRepository : IBookRepository
 {
-    private readonly BookContext context;
+    private readonly BookDbContext context;
 
-    public BookRepository(BookContext context)
+    public BookRepository(BookDbContext context)
     {
         this.context = context;
     }
@@ -21,13 +21,12 @@ public class BookRepository : IBookRepository
     public async Task InsertAsync(Book book)
     {
         await context.Books.AddAsync(book);
-        await context.SaveChangesAsync();
     }
 
     public async Task UpdateAsync(Book book)
     {
         context.Books.Update(book);
-        await context.SaveChangesAsync();
+        await Task.CompletedTask;
     }
 
     public async Task<BookProgress> GetProgressAsync(Guid bookId)
@@ -38,25 +37,24 @@ public class BookRepository : IBookRepository
     public async Task UpdateProgressAsync(BookProgress bookProgress)
     {
         context.BookProgresses.Update(bookProgress);
-        await context.SaveChangesAsync();
+        await Task.CompletedTask;
     }
 
     public async Task InsertProgressAsync(BookProgress bookProgress)
     {
         context.BookProgresses.Add(bookProgress);
-        await context.SaveChangesAsync();
+        await Task.CompletedTask;
     }
 
     public async Task InsertChapterAsync(Chapter chapter)
     {
         await context.Chapters.AddAsync(chapter);
-        await context.SaveChangesAsync();
     }
 
     public async Task UpdateChapterAsync(Chapter chapter)
     {
         context.Chapters.Update(chapter);
-        await context.SaveChangesAsync();
+        await Task.CompletedTask;
     }
 
     public async Task<Chapter> GetChapterAsync(Guid chapterId)

@@ -6,6 +6,7 @@ using OpenAI.GPT3.ObjectModels;
 using System.Text;
 using BookGenerator.Domain.Core;
 using Microsoft.Extensions.DependencyInjection;
+using BookGenerator.Application.Abstractions.Data;
 
 namespace BookGenerator.Infrastructure.Books;
 
@@ -13,12 +14,14 @@ public class BookCreaterChatGpt : IBookCreater
 {
     private readonly IOpenAIService openAIService;
     private readonly IBookRepository bookRepository;
+    private readonly IUnitOfWork unitOfWork;
     private readonly IServiceScopeFactory scopeFactory;
 
-    public BookCreaterChatGpt(IOpenAIService openAIService, IBookRepository bookRepository, IServiceScopeFactory scopeFactory)
+    public BookCreaterChatGpt(IOpenAIService openAIService, IBookRepository bookRepository, IUnitOfWork unitOfWork, IServiceScopeFactory scopeFactory)
     {
         this.openAIService = openAIService ?? throw new ArgumentNullException(nameof(openAIService));
         this.bookRepository = bookRepository ?? throw new ArgumentNullException(nameof(bookRepository));
+        this.unitOfWork = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork));
         this.scopeFactory = scopeFactory ?? throw new ArgumentNullException(nameof(scopeFactory));
     }
 
@@ -34,12 +37,14 @@ public class BookCreaterChatGpt : IBookCreater
             Title = bookTitle
         };
         await bookRepository.InsertProgressAsync(progress);
+        await unitOfWork.SaveChangesAsync();
 
         var task = new Task(async () =>
         {
             using (var scope = scopeFactory.CreateScope())
             {
                 var scopedBookRepository = scope.ServiceProvider.GetRequiredService<IBookRepository>();
+                var scopedUnitOfWork = scope.ServiceProvider.GetRequiredService<IUnitOfWork>();
                 while (true)
                 {
                     var completionResult = await openAIService.Completions.CreateCompletion(
@@ -56,7 +61,8 @@ public class BookCreaterChatGpt : IBookCreater
                         Console.WriteLine(tableOfContent);
                         progress.Progress = 10;
                         await scopedBookRepository.UpdateProgressAsync(progress);
-
+                        await scopedUnitOfWork.SaveChangesAsync();
+                        
                         IEnumerable<string> chapters = tableOfContent.Split("\n").Where(chapter => chapter.Contains("Chapter ", StringComparison.InvariantCultureIgnoreCase));
                         int i = 0;
                         foreach (string chapter in chapters)
@@ -65,6 +71,7 @@ public class BookCreaterChatGpt : IBookCreater
                             int progressValue = 10 + (int)((85.0 * i) / chapters.Count());
                             progress.Progress = progressValue;
                             await scopedBookRepository.UpdateProgressAsync(progress);
+                            await scopedUnitOfWork.SaveChangesAsync();
                             while (true)
                             {
                                 var chapterCompletion = await openAIService.Completions.CreateCompletion(
@@ -80,6 +87,7 @@ public class BookCreaterChatGpt : IBookCreater
                                     string text = chapterCompletion.Choices.First().Text;
                                     var chapterEntity = new Chapter() { Content = text, Title = chapter, Order = i, BookId = book.Id };
                                     await scopedBookRepository.InsertChapterAsync(chapterEntity);
+                                    await scopedUnitOfWork.SaveChangesAsync();
                                     break;
                                 }
                                 await Task.Delay(2000);
@@ -92,6 +100,7 @@ public class BookCreaterChatGpt : IBookCreater
                 progress.Progress = 100;
                 progress.Status = BookStatus.Completed;
                 await scopedBookRepository.UpdateProgressAsync(progress);
+                await scopedUnitOfWork.SaveChangesAsync();
             }
         });
         task.Start();

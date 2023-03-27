@@ -1,11 +1,12 @@
-﻿using BookGenerator.Domain.Core;
+﻿using BookGenerator.Application.Abstractions.Data;
+using BookGenerator.Domain.Core;
 using Microsoft.EntityFrameworkCore;
 
 namespace BookGenerator.Persistence;
 
-public class BookContext : DbContext
+public class BookDbContext : DbContext, IUnitOfWork
 {
-    public BookContext(DbContextOptions<BookContext> options)
+    public BookDbContext(DbContextOptions<BookDbContext> options)
         : base(options)
     {
     }
