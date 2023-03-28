@@ -31,7 +31,12 @@ public class BookCreaterInMemory : IBookCreater
             Title = bookTitle
         };
         await bookRepository.InsertProgressAsync(progress);
-        await unitOfWork.SaveChangesAsync();
+        int rowAffected = await unitOfWork.SaveChangesAsync();
+        if (rowAffected == 0)
+        {
+            throw new ApplicationException("Failed to create book");
+        }
+
         var task = new Task(async () =>
         {
             await Task.Delay(15000);

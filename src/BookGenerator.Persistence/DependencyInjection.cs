@@ -12,7 +12,7 @@ public static class DependencyInjection
     {
         services.AddDbContext<BookDbContext>(options =>
             options.UseSqlServer(configuration["BOOKGENERATOR_CONNECTIONSTRING"]));
-        services.AddScoped<IUnitOfWork, BookDbContext>();
+        services.AddScoped<IUnitOfWork, UnitOfWork>();
 
         if (string.Equals(configuration["BookRepository"], "Test", StringComparison.OrdinalIgnoreCase))
         {
