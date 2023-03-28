@@ -2,7 +2,7 @@
 using BookGenerator.Domain.Core;
 using BookGenerator.Domain.Primitives;
 using BookGenerator.Domain.Primitives.Result;
-using BookGenerator.Domain.Services;
+using BookGenerator.Domain.Repositories;
 
 namespace BookGenerator.Application.Books.Queries.GetBook;
 
@@ -17,7 +17,7 @@ internal sealed class GetBookByIdQueryHandler : IQueryHandler<GetBookByIdQuery, 
 
     public async Task<Result<Book>> Handle(GetBookByIdQuery request, CancellationToken cancellationToken)
     {
-        Book result = await bookRepository.GetAsync(request.BookId);
+        Book result = await bookRepository.GetByIdAsync(request.BookId);
         if (result == null)
         {
             return Result.Failure<Book>(new Error("Book.NotFound", $"The book with id {request.BookId} has not found"));

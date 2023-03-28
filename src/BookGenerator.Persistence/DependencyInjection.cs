@@ -1,5 +1,5 @@
 ﻿using BookGenerator.Application.Abstractions.Data;
-using BookGenerator.Domain.Services;
+using BookGenerator.Domain.Repositories;
 using BookGenerator.Persistence.Books;
 using BookGenerator.Persistence.Repositories;
 using Microsoft.EntityFrameworkCore;
@@ -14,17 +14,11 @@ public static class DependencyInjection
     {
         services.AddDbContext<BookDbContext>(options =>
             options.UseSqlServer(configuration["BOOKGENERATOR_CONNECTIONSTRING"]));
-        services.AddScoped<IDbContext, BookDbContext>();
-        services.AddScoped<IUnitOfWork, UnitOfWork>();
-
-        if (string.Equals(configuration["BookRepository"], "Test", StringComparison.OrdinalIgnoreCase))
-        {
-            services.AddScoped<IBookRepository, BookRepositoryInMemory>();
-        }
-        else
-        {
-            services.AddScoped<IBookRepository, BookRepository>();
-        }
+        services.AddScoped<IDbContext>(serviceProvider => serviceProvider.GetRequiredService<BookDbContext>());
+        services.AddScoped<IUnitOfWork>(serviceProvider => serviceProvider.GetRequiredService<BookDbContext>());
+        services.AddScoped<IBookRepository, BookRepository>();
+        services.AddScoped<IChapterRepository, ChapterRepository>();
+        services.AddScoped<IProgressRepository, ProgressRepository>();
         
         return services;
     }

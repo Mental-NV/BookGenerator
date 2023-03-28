@@ -1,5 +1,7 @@
 ﻿using BookGenerator.Application.Abstractions.Data;
 using BookGenerator.Domain.Core;
+using BookGenerator.Domain.Primitives;
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 
 namespace BookGenerator.Persistence.Books;
@@ -34,7 +36,7 @@ public class BookDbContext : DbContext, IDbContext, IUnitOfWork
             .IsRequired();
 
         modelBuilder.Entity<BookProgress>()
-            .HasKey(x => x.BookId);
+            .HasKey(x => x.Id);
 
         modelBuilder.Entity<BookProgress>()
             .Property(x => x.Title)
@@ -44,6 +46,41 @@ public class BookDbContext : DbContext, IDbContext, IUnitOfWork
         modelBuilder.Entity<BookProgress>()
             .HasOne<Book>()
             .WithOne()
-            .HasForeignKey<BookProgress>(x => x.BookId);
+            .HasForeignKey<BookProgress>(x => x.Id);
     }
+
+    /// <inheritdoc />
+    public new DbSet<TEntity> Set<TEntity>()
+        where TEntity : Entity
+        => base.Set<TEntity>();
+
+    /// <inheritdoc />
+    public async Task<TEntity> GetBydIdAsync<TEntity>(Guid id)
+        where TEntity : Entity
+    {
+        if (id == Guid.Empty)
+        {
+            return null;
+        }
+        return await Set<TEntity>().FirstOrDefaultAsync(e => e.Id == id);
+    }
+
+    /// <inheritdoc />
+    public void Insert<TEntity>(TEntity entity)
+        where TEntity : Entity
+        => Set<TEntity>().Add(entity);
+
+    /// <inheritdoc />
+    public void InsertRange<TEntity>(IReadOnlyCollection<TEntity> entities)
+        where TEntity : Entity
+        => Set<TEntity>().AddRange(entities);
+
+    /// <inheritdoc />
+    public new void Remove<TEntity>(TEntity entity)
+        where TEntity : Entity
+        => Set<TEntity>().Remove(entity);
+
+    /// <inheritdoc />
+    public Task<int> ExecuteSqlAsync(string sql, IEnumerable<SqlParameter> parameters, CancellationToken cancellationToken = default)
+        => Database.ExecuteSqlRawAsync(sql, parameters, cancellationToken);
 }

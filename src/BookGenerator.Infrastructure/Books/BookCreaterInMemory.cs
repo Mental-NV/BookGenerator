@@ -1,5 +1,6 @@
 ﻿using BookGenerator.Application.Abstractions.Data;
 using BookGenerator.Domain.Core;
+using BookGenerator.Domain.Repositories;
 using BookGenerator.Domain.Services;
 using Microsoft.Extensions.DependencyInjection;
 using System.Collections.Concurrent;
@@ -22,15 +23,13 @@ public class BookCreaterInMemory : IBookCreater
     public async Task<Guid> CreateAsync(string bookTitle)
     {
         Book book = new Book(bookTitle);
-        await bookRepository.InsertAsync(book);
-        BookProgress progress = new BookProgress()
+        BookProgress progress = new(book)
         {
             Progress = 5,
-            BookId = book.Id,
             Status = BookStatus.Pending,
             Title = bookTitle
         };
-        await bookRepository.InsertProgressAsync(progress);
+        bookRepository.Insert(book);
         int rowAffected = await unitOfWork.SaveChangesAsync();
         if (rowAffected == 0)
         {
@@ -42,11 +41,12 @@ public class BookCreaterInMemory : IBookCreater
             await Task.Delay(15000);
             using (var scope = scopeFactory.CreateScope())
             {
-                var scopedBookRepository = scope.ServiceProvider.GetRequiredService<IBookRepository>();
+                var scopedChapterRepository = scope.ServiceProvider.GetRequiredService<IChapterRepository>();
+                var scopedProgressRepository = scope.ServiceProvider.GetRequiredService<IProgressRepository>();
                 var scopedUnityOfWork = scope.ServiceProvider.GetRequiredService<IUnitOfWork>();
                 for (int i = 0; i < 10; i++)
                 {
-                    await scopedBookRepository.InsertChapterAsync(new Chapter()
+                    scopedChapterRepository.Insert(new Chapter()
                     {
                         Order = i + 1,
                         Title = $"Chapter {i + 1}",
@@ -55,10 +55,10 @@ public class BookCreaterInMemory : IBookCreater
                     });
                 }
 
-                BookProgress scopedBookProgress = await scopedBookRepository.GetProgressAsync(book.Id);
+                BookProgress scopedBookProgress = await scopedProgressRepository.GetByIdAsync(book.Id);
                 scopedBookProgress.Progress = 100;
                 scopedBookProgress.Status = BookStatus.Completed;
-                await scopedBookRepository.UpdateProgressAsync(scopedBookProgress);
+                scopedProgressRepository.Update(scopedBookProgress);
                 await scopedUnityOfWork.SaveChangesAsync();
             }
 

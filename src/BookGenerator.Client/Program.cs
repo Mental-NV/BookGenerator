@@ -15,7 +15,7 @@ builder.Services
 builder.Services
     .AddHttpClient("BookApiClient", client =>
     {
-        string? baseUrl = builder.Configuration["BookApiService:BaseUrl"];
+        string baseUrl = builder.Configuration["BookApiService:BaseUrl"];
         if (string.IsNullOrEmpty(baseUrl))
         {
             throw new ApplicationException("Base url for BookApi is not set");
