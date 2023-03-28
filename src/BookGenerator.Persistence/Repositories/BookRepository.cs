@@ -1,4 +1,5 @@
-﻿using BookGenerator.Domain.Core;
+﻿using BookGenerator.Application.Abstractions.Data;
+using BookGenerator.Domain.Core;
 using BookGenerator.Domain.Services;
 using BookGenerator.Persistence.Books;
 using Microsoft.EntityFrameworkCore;
@@ -7,9 +8,9 @@ namespace BookGenerator.Persistence.Repositories;
 
 public class BookRepository : IBookRepository
 {
-    private readonly BookDbContext context;
+    private readonly IDbContext context;
 
-    public BookRepository(BookDbContext context)
+    public BookRepository(IDbContext context)
     {
         this.context = context;
     }

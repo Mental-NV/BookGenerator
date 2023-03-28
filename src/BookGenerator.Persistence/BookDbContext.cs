@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace BookGenerator.Persistence.Books;
 
-public class BookDbContext : DbContext
+public class BookDbContext : DbContext, IDbContext, IUnitOfWork
 {
     public BookDbContext(DbContextOptions<BookDbContext> options)
         : base(options)
