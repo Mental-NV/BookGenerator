@@ -1,6 +1,7 @@
 ﻿using BookGenerator.Application.Abstractions.Data;
 using BookGenerator.Domain.Services;
 using BookGenerator.Persistence.Books;
+using BookGenerator.Persistence.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;

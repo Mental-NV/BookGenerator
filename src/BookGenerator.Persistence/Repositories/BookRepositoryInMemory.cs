@@ -2,7 +2,7 @@
 using BookGenerator.Domain.Services;
 using System.Collections.Concurrent;
 
-namespace BookGenerator.Persistence.Books;
+namespace BookGenerator.Persistence.Repositories;
 
 public class BookRepositoryInMemory : IBookRepository
 {

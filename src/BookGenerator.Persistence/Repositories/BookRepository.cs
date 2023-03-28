@@ -1,8 +1,9 @@
 ﻿using BookGenerator.Domain.Core;
 using BookGenerator.Domain.Services;
+using BookGenerator.Persistence.Books;
 using Microsoft.EntityFrameworkCore;
 
-namespace BookGenerator.Persistence.Books;
+namespace BookGenerator.Persistence.Repositories;
 
 public class BookRepository : IBookRepository
 {
