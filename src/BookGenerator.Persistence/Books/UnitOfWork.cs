@@ -1,6 +1,6 @@
 ﻿using BookGenerator.Application.Abstractions.Data;
 
-namespace BookGenerator.Persistence;
+namespace BookGenerator.Persistence.Books;
 
 public class UnitOfWork : IUnitOfWork
 {

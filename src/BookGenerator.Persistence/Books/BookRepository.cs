@@ -2,7 +2,7 @@
 using BookGenerator.Domain.Services;
 using Microsoft.EntityFrameworkCore;
 
-namespace BookGenerator.Persistence;
+namespace BookGenerator.Persistence.Books;
 
 public class BookRepository : IBookRepository
 {
