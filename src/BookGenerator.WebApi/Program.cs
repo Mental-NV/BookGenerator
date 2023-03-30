@@ -4,6 +4,8 @@ using BookGenerator.Persistence;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Services.AddProblemDetails();
+
 builder.Services
     .AddApplication()
     .AddInfrastructure(builder.Configuration)
