@@ -9,5 +9,5 @@ public interface IBookApiService
 {
     Task<CreateBookResponse> CreateAsync(string bookTitle);
     Task<GetStatusResponse> GetStatusAsync(Guid bookId);
-    Task<BookFile> GetResult(Guid bookId);
+    Task<BookFile> GetResultAsync(Guid bookId);
 }

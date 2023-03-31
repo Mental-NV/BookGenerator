@@ -32,7 +32,7 @@ public class HomeController : Controller
     [HttpGet("Download/{bookId}")]
     public async Task<IActionResult> Download(Guid bookId)
     {
-        BookFile bookFile = await bookApiService.GetResult(bookId);
+        BookFile bookFile = await bookApiService.GetResultAsync(bookId);
         GetStatusResponse status = await bookApiService.GetStatusAsync(bookId);
         return View(new DownloadViewModel() { Book = bookFile, BookTitle = status.BookTitle });
     }

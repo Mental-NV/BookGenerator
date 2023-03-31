@@ -24,7 +24,7 @@ public class BookApiService : BaseApiService, IBookApiService
         return result;
     }
 
-    public async Task<BookFile> GetResult(Guid bookId)
+    public async Task<BookFile> GetResultAsync(Guid bookId)
     {
         var result = await this.GetAsync<BookFile>($"/api/book/download/{bookId}");
         return result;
