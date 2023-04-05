@@ -1,8 +1,10 @@
 ﻿using BookGenerator.Application.Abstractions.Data;
+using BookGenerator.Domain.Abstraction;
 using BookGenerator.Domain.Core;
 using BookGenerator.Domain.Primitives;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 
 namespace BookGenerator.Persistence.Books;
 
@@ -19,6 +21,15 @@ public class BookDbContext : DbContext, IDbContext, IUnitOfWork
 
     public DbSet<Chapter> Chapters { get; set; }
 
+    public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
+    {
+        DateTime utcNow = DateTime.UtcNow;
+
+        UpdateAudidableEntities(utcNow);
+
+        return await base.SaveChangesAsync(cancellationToken);
+    }
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<Book>()
@@ -26,10 +37,20 @@ public class BookDbContext : DbContext, IDbContext, IUnitOfWork
             .HasColumnType("nvarchar(250)")
             .IsRequired();
 
+        modelBuilder.Entity<Book>()
+            .Property(x => x.CreateOnUtc)
+            .IsRequired()
+            .HasDefaultValueSql("GETUTCDATE()");
+
         modelBuilder.Entity<Chapter>()
             .Property(x => x.Title)
             .HasColumnType("nvarchar(250)")
             .IsRequired();
+
+        modelBuilder.Entity<Chapter>()
+            .Property(x => x.CreateOnUtc)
+            .IsRequired()
+            .HasDefaultValueSql("GETUTCDATE()");
 
         modelBuilder.Entity<Chapter>()
             .Property(x => x.Content)
@@ -42,6 +63,11 @@ public class BookDbContext : DbContext, IDbContext, IUnitOfWork
             .Property(x => x.Title)
             .HasColumnType("nvarchar(250)")
             .IsRequired();
+
+        modelBuilder.Entity<BookProgress>()
+            .Property(x => x.CreateOnUtc)
+            .IsRequired()
+            .HasDefaultValueSql("GETUTCDATE()");
 
         modelBuilder.Entity<BookProgress>()
             .HasOne<Book>()
@@ -83,4 +109,20 @@ public class BookDbContext : DbContext, IDbContext, IUnitOfWork
     /// <inheritdoc />
     public Task<int> ExecuteSqlAsync(string sql, IEnumerable<SqlParameter> parameters, CancellationToken cancellationToken = default)
         => Database.ExecuteSqlRawAsync(sql, parameters, cancellationToken);
+
+    private void UpdateAudidableEntities(DateTime utcNow)
+    {
+        foreach (EntityEntry<IAuditableEntity> auditableEntity in this.ChangeTracker.Entries<IAuditableEntity>())
+        {
+            if (auditableEntity.State == EntityState.Added)
+            {
+                auditableEntity.Property(nameof(IAuditableEntity.CreateOnUtc)).CurrentValue = utcNow;
+            }
+
+            if (auditableEntity.State == EntityState.Modified)
+            {
+                auditableEntity.Property(nameof(IAuditableEntity.ModifiedOnUtc)).CurrentValue = utcNow;
+            }
+        }
+    }
 }

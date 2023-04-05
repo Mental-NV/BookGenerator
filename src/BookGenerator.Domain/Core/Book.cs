@@ -1,8 +1,9 @@
-﻿using BookGenerator.Domain.Primitives;
+﻿using BookGenerator.Domain.Abstraction;
+using BookGenerator.Domain.Primitives;
 
 namespace BookGenerator.Domain.Core;
 
-public class Book : Entity
+public class Book : Entity, IAuditableEntity
 {
     public Book(string title)
         : base(Guid.NewGuid())
@@ -22,4 +23,8 @@ public class Book : Entity
 
     public string Title { get; set; }
     public virtual List<Chapter> Chapters { get; set; } = new List<Chapter>();
+
+    public DateTime CreateOnUtc { get; protected init; }
+
+    public DateTime? ModifiedOnUtc { get; protected init; }
 }

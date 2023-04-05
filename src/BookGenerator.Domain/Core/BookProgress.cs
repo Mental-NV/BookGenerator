@@ -1,8 +1,9 @@
-﻿using BookGenerator.Domain.Primitives;
+﻿using BookGenerator.Domain.Abstraction;
+using BookGenerator.Domain.Primitives;
 
 namespace BookGenerator.Domain.Core;
 
-public class BookProgress : Entity
+public class BookProgress : Entity, IAuditableEntity
 {
     public BookProgress(Book book) : base(book.Id)
     {
@@ -21,4 +22,7 @@ public class BookProgress : Entity
     public BookStatus Status { get; set; }
     public string Title { get; set; }
     public int Progress { get; set; }
+
+    public DateTime CreateOnUtc { get; protected init; }
+    public DateTime? ModifiedOnUtc { get; protected init; }
 }
