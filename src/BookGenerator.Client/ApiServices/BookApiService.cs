@@ -1,5 +1,7 @@
 ﻿using BookGenerator.Application.Contracts.Books;
 using BookGenerator.Domain.Core;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
 using System;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -8,7 +10,8 @@ namespace BookGenerator.Client.ApiServices;
 
 public class BookApiService : BaseApiService, IBookApiService
 {
-    public BookApiService(IHttpClientFactory httpClientFactory)
+    public BookApiService(IHttpClientFactory httpClientFactory, IOptions<JsonOptions> jsonOptions)
+        : base(jsonOptions)
     {
         if (httpClientFactory is null)
         {

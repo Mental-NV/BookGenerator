@@ -1,4 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
+using System;
 using System.Net.Http;
 using System.Text;
 using System.Text.Json;
@@ -11,10 +13,26 @@ namespace BookGenerator.Client.ApiServices;
 /// </summary>
 public abstract class BaseApiService
 {
+    private readonly JsonSerializerOptions jsonOptions;
+
     /// <summary>
     /// Http client instance.
     /// </summary>
     protected HttpClient httpClient;
+
+    /// <summary>
+    /// Creates an instance of <see cref="BaseApiService"/>
+    /// </summary>
+    /// <param name="jsonOptions">JSON (de)serialization options</param>
+    protected BaseApiService(IOptions<JsonOptions> jsonOptions)
+    {
+        if (jsonOptions is null || jsonOptions.Value is null)
+        {
+            throw new ArgumentNullException(nameof(jsonOptions));
+        }
+
+        this.jsonOptions = jsonOptions.Value.JsonSerializerOptions;
+    }
 
     /// <summary>
     /// Call the microservice by Web API.
@@ -31,7 +49,7 @@ public abstract class BaseApiService
         }
 
         var responseString = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
-        return JsonSerializer.Deserialize<T>(responseString);
+        return JsonSerializer.Deserialize<T>(responseString, jsonOptions);
     }
 
     /// <summary>
@@ -53,7 +71,7 @@ public abstract class BaseApiService
         }
 
         var responseString = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
-        return JsonSerializer.Deserialize<TResponse>(responseString);
+        return JsonSerializer.Deserialize<TResponse>(responseString, jsonOptions);
     }
 
     /// <summary>
@@ -82,12 +100,12 @@ public abstract class BaseApiService
         return response;
     }
 
-    private static async Task HandleErrors(HttpResponseMessage response)
+    private async Task HandleErrors(HttpResponseMessage response)
     {
         if (!response.IsSuccessStatusCode)
         {
             string content = await response.Content.ReadAsStringAsync();
-            var problemDetails = JsonSerializer.Deserialize<ProblemDetails>(content);
+            var problemDetails = JsonSerializer.Deserialize<ProblemDetails>(content, jsonOptions);
             throw new ApiException(problemDetails);
         }
     }

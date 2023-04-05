@@ -1,10 +1,13 @@
 using BookGenerator.Application.Contracts.Books;
 using BookGenerator.Domain.Core;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
 using Moq;
 using Moq.Protected;
 using System.Net;
 using System.Text;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace BookGenerator.Client.ApiServices.Tests
 {
@@ -15,7 +18,8 @@ namespace BookGenerator.Client.ApiServices.Tests
         public void Constructor_ThrowsArgumentNullException_WhenHttpClientFactoryIsNull()
         {
             // Arrange & Act & Assert
-            Assert.ThrowsException<ArgumentNullException>(() => new BookApiService(null));
+            Assert.ThrowsException<ArgumentNullException>(() => new BookApiService(null, Mock.Of<IOptions<JsonOptions>>()));
+            Assert.ThrowsException<ArgumentNullException>(() => new BookApiService(Mock.Of<IHttpClientFactory>(), null));
         }
 
         [TestMethod()]
@@ -23,9 +27,10 @@ namespace BookGenerator.Client.ApiServices.Tests
         {
             // Arrange
             var httpClientFactoryMock = new Mock<IHttpClientFactory>();
+            var mockJsonOptions = CreateJsonOptions();
 
             // Act & Assert
-            var service = new BookApiService(httpClientFactoryMock.Object);
+            var service = new BookApiService(httpClientFactoryMock.Object, mockJsonOptions);
             Assert.IsNotNull(service);
         }
 
@@ -34,8 +39,10 @@ namespace BookGenerator.Client.ApiServices.Tests
         {
             // Arrange
             CreateBookResponse expected = new CreateBookResponse(Guid.NewGuid());
-            IHttpClientFactory mockHttpClientFactory = CreateHttpClientFactory(JsonSerializer.Serialize(expected));
-            var service = new BookApiService(mockHttpClientFactory);
+            var mockJsonOptions = CreateJsonOptions();
+            IHttpClientFactory mockHttpClientFactory = CreateHttpClientFactory(
+                JsonSerializer.Serialize(expected, mockJsonOptions.Value.JsonSerializerOptions));
+            var service = new BookApiService(mockHttpClientFactory, mockJsonOptions);
 
             // Act
             CreateBookResponse actual = await service.CreateAsync("Test");
@@ -50,9 +57,10 @@ namespace BookGenerator.Client.ApiServices.Tests
         {
             // Arrange
             var expected = new GetStatusResponse("dummy title", BookStatus.Pending, 5);
-            var expectedJson = JsonSerializer.Serialize(expected);
+            var mockJsonOptions = CreateJsonOptions();
+            var expectedJson = JsonSerializer.Serialize(expected, mockJsonOptions.Value.JsonSerializerOptions);
             IHttpClientFactory mockHttpClientFactory = CreateHttpClientFactory(expectedJson);
-            var service = new BookApiService(mockHttpClientFactory);
+            var service = new BookApiService(mockHttpClientFactory, mockJsonOptions);
 
             // Act
             GetStatusResponse actual = await service.GetStatusAsync(Guid.NewGuid());
@@ -74,9 +82,10 @@ namespace BookGenerator.Client.ApiServices.Tests
                 Name = "dummy name", 
                 ContentType = "dummy content type" 
             };
-            var expectedJson = JsonSerializer.Serialize(expected);
+            var mockJsonOptions = CreateJsonOptions();
+            var expectedJson = JsonSerializer.Serialize(expected, mockJsonOptions.Value.JsonSerializerOptions);
             IHttpClientFactory mockHttpClientFactory = CreateHttpClientFactory(expectedJson);
-            var service = new BookApiService(mockHttpClientFactory);
+            var service = new BookApiService(mockHttpClientFactory, mockJsonOptions);
             // Act
             BookFile actual = await service.GetResultAsync(Guid.NewGuid());
             // Assert
@@ -102,6 +111,19 @@ namespace BookGenerator.Client.ApiServices.Tests
             httpClientFactoryMock.Setup(factory => factory.CreateClient("BookApiClient"))
                 .Returns(httpClient);
             return httpClientFactoryMock.Object;
+        }
+
+        private static IOptions<JsonOptions> CreateJsonOptions()
+        {
+            JsonOptions optionsMock = new();
+            optionsMock.JsonSerializerOptions.PropertyNamingPolicy = null;
+            optionsMock.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+
+            var options = new Mock<IOptions<JsonOptions>>();
+            options
+                .Setup(o => o.Value)
+                .Returns(optionsMock);
+            return options.Object;
         }
     }
 }
