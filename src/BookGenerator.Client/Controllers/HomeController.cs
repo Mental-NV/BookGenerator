@@ -47,7 +47,14 @@ public class HomeController : Controller
         }
         else
         {
-            return View(new StatusViewModel() { BookId = bookId, BookTitle = status.BookTitle, Status = status.Status, Progress = status.Progress });
+            return View(new StatusViewModel()
+            {
+                BookId = bookId,
+                BookTitle = status.BookTitle,
+                Status = status.Status,
+                Progress = status.Progress,
+                ErrorMessage = status.ErrorMessage
+            });
         }
     }
 

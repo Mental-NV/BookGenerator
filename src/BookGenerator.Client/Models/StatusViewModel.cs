@@ -9,4 +9,5 @@ public class StatusViewModel
     public string BookTitle { get; set; }
     public BookStatus Status { get; set; }
     public int Progress { get; set; }
+    public string ErrorMessage { get; set; }
 }

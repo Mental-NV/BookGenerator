@@ -22,6 +22,7 @@ public class BookProgress : Entity, IAuditableEntity
     public BookStatus Status { get; set; }
     public string Title { get; set; }
     public int Progress { get; set; }
+    public string ErrorMessage { get; set; }
 
     public DateTime CreateOnUtc { get; protected init; }
     public DateTime? ModifiedOnUtc { get; protected init; }

@@ -31,7 +31,7 @@ namespace BookGenerator.Client.BackgroundWorkers.Tests
             var bookApiMock = new Mock<IBookApiService>();
             bookApiMock.Setup(api => api.GetStatusAsync(Guid.Empty))
                 .Callback(() => getStatusAsyncCalled.SetResult(true))
-                .ReturnsAsync(new GetStatusResponse("dummy title", BookStatus.Pending, 5));
+                .ReturnsAsync(new GetStatusResponse("dummy title", BookStatus.Pending, 5, null));
 
             var startupWorker = new StartupWorker(bookApiMock.Object);
 

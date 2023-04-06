@@ -27,7 +27,7 @@ internal sealed class GetStatusByIdQueryHandler
             return Result.Failure<GetStatusResponse>(new Error("BookProgress.NotFound", $"Book progress with id {request.BookId} has not found"));
         }
 
-        var response = new GetStatusResponse(result.Title, result.Status, result.Progress);
+        var response = new GetStatusResponse(result.Title, result.Status, result.Progress, result.ErrorMessage);
         return response;
     }
 }

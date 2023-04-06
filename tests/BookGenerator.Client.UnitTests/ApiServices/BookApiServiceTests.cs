@@ -56,7 +56,7 @@ namespace BookGenerator.Client.ApiServices.Tests
         public async Task GetStatusAsyncTest()
         {
             // Arrange
-            var expected = new GetStatusResponse("dummy title", BookStatus.Pending, 5);
+            var expected = new GetStatusResponse("dummy title", BookStatus.Pending, 5, null);
             var mockJsonOptions = CreateJsonOptions();
             var expectedJson = JsonSerializer.Serialize(expected, mockJsonOptions.Value.JsonSerializerOptions);
             IHttpClientFactory mockHttpClientFactory = CreateHttpClientFactory(expectedJson);

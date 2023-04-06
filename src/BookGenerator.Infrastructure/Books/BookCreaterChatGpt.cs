@@ -8,6 +8,7 @@ using BookGenerator.Domain.Core;
 using Microsoft.Extensions.DependencyInjection;
 using BookGenerator.Application.Abstractions.Data;
 using BookGenerator.Domain.Repositories;
+using OpenAI.GPT3.ObjectModels.ResponseModels;
 
 namespace BookGenerator.Infrastructure.Books;
 
@@ -53,9 +54,13 @@ public class BookCreaterChatGpt : IBookCreater
                 var scopedProgressRepository = scope.ServiceProvider.GetRequiredService<IProgressRepository>();
                 var scopedChapterRepository = scope.ServiceProvider.GetRequiredService<IChapterRepository>();
                 var scopedUnitOfWork = scope.ServiceProvider.GetRequiredService<IUnitOfWork>();
-                while (true)
+
+                CompletionCreateResponse tocResponse = null;
+                int tocAttempt = 0;
+                const int maxAttempts = 3;
+                while (tocAttempt++ < maxAttempts)
                 {
-                    var completionResult = await openAIService.Completions.CreateCompletion(
+                    tocResponse = await openAIService.Completions.CreateCompletion(
                         new CompletionCreateRequest()
                         {
                             Prompt = $"Write a table of content for a book with name '{bookTitle}'. Please format list the chapters in format 'Chapter #: Title'",
@@ -63,48 +68,91 @@ public class BookCreaterChatGpt : IBookCreater
                             MaxTokens = 4000
                         }
                     );
-                    if (completionResult.Successful && completionResult.Choices.Any())
+
+                    if (tocResponse.Successful)
                     {
-                        string tableOfContent = completionResult.Choices.First().Text;
-                        Console.WriteLine(tableOfContent);
-                        progress.Progress = 10;
-                        scopedProgressRepository.Update(progress);
-                        await scopedUnitOfWork.SaveChangesAsync();
-                        
-                        IEnumerable<string> chapters = tableOfContent.Split("\n").Where(chapter => chapter.Contains("Chapter ", StringComparison.InvariantCultureIgnoreCase));
-                        int i = 0;
-                        foreach (string chapter in chapters)
-                        {
-                            i++;
-                            int progressValue = 10 + (int)((85.0 * i) / chapters.Count());
-                            progress.Progress = progressValue;
-                            scopedProgressRepository.Update(progress);
-                            await scopedUnitOfWork.SaveChangesAsync();
-                            while (true)
-                            {
-                                var chapterCompletion = await openAIService.Completions.CreateCompletion(
-                                    new CompletionCreateRequest()
-                                    {
-                                        Prompt = $"Write a chapter '{chapter} for the book '{bookTitle}'. Format titles with leading #. Format subtitles with leading ##.",
-                                        Model = Models.TextDavinciV3,
-                                        MaxTokens = 4000
-                                    }
-                                );
-                                if (chapterCompletion.Successful && chapterCompletion.Choices.Any())
-                                {
-                                    string text = chapterCompletion.Choices.First().Text;
-                                    var chapterEntity = new Chapter() { Content = text, Title = chapter, Order = i, BookId = book.Id };
-                                    scopedChapterRepository.Insert(chapterEntity);
-                                    await scopedUnitOfWork.SaveChangesAsync();
-                                    break;
-                                }
-                                await Task.Delay(2000);
-                            }
-                        }
                         break;
                     }
                     await Task.Delay(2000);
                 }
+
+                if (!tocResponse.Successful)
+                {
+                    progress.Status = BookStatus.Failed;
+                    progress.ErrorMessage = tocResponse.Error.ToString();
+                    scopedProgressRepository.Update(progress);
+                    await scopedUnitOfWork.SaveChangesAsync();
+                    return;
+                }
+
+                if (!tocResponse.Choices.Any())
+                {
+                    progress.Status = BookStatus.Failed;
+                    progress.ErrorMessage = $"No response from ChatGPT API. {tocResponse}";
+                    scopedProgressRepository.Update(progress);
+                    await scopedUnitOfWork.SaveChangesAsync();
+                    return;
+                }
+
+                string tableOfContent = tocResponse.Choices.First().Text;
+                progress.Progress = 10;
+                scopedProgressRepository.Update(progress);
+                await scopedUnitOfWork.SaveChangesAsync();
+
+                IEnumerable<string> chapters = tableOfContent.Split("\n")
+                    .Where(chapter => chapter.Contains("Chapter ", StringComparison.InvariantCultureIgnoreCase));
+                int chapterNumber = 1;
+                foreach (string chapter in chapters)
+                {
+                    int progressValue = 10 + (int)((85.0 * chapterNumber++) / chapters.Count());
+                    progress.Progress = progressValue;
+                    scopedProgressRepository.Update(progress);
+                    await scopedUnitOfWork.SaveChangesAsync();
+
+                    CompletionCreateResponse chapterResponse = null;
+                    int chapterAttempt = 0;
+                    while (chapterAttempt++ < maxAttempts)
+                    {
+                        chapterResponse = await openAIService.Completions.CreateCompletion(
+                            new CompletionCreateRequest()
+                            {
+                                Prompt = $"Write a chapter '{chapter} for the book '{bookTitle}'. Format titles with leading #. Format subtitles with leading ##.",
+                                Model = Models.TextDavinciV3,
+                                MaxTokens = 4000
+                            }
+                        );
+
+                        if (chapterResponse.Successful)
+                        {
+                            break;
+                        }
+                        await Task.Delay(2000);
+                    }
+
+                    if (!chapterResponse.Successful)
+                    {
+                        progress.Status = BookStatus.Failed;
+                        progress.ErrorMessage = chapterResponse.Error.ToString();
+                        scopedProgressRepository.Update(progress);
+                        await scopedUnitOfWork.SaveChangesAsync();
+                        return;
+                    }
+
+                    if (!chapterResponse.Choices.Any())
+                    {
+                        progress.Status = BookStatus.Failed;
+                        progress.ErrorMessage = $"No response from ChatGPT API. {chapterResponse}";
+                        scopedProgressRepository.Update(progress);
+                        await scopedUnitOfWork.SaveChangesAsync();
+                        return;
+                    }
+
+                    string text = chapterResponse.Choices.First().Text;
+                    var chapterEntity = new Chapter() { Content = text, Title = chapter, Order = chapterNumber, BookId = book.Id };
+                    scopedChapterRepository.Insert(chapterEntity);
+                    await scopedUnitOfWork.SaveChangesAsync(); 
+                }
+
                 progress.Progress = 100;
                 progress.Status = BookStatus.Completed;
                 scopedProgressRepository.Update(progress);
