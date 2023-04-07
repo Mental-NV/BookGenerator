@@ -3,7 +3,7 @@ using BookGenerator.Domain.Primitives;
 
 namespace BookGenerator.Domain.Core;
 
-public class Book : Entity, IAuditableEntity
+public class Book : AggregateRoot, IAuditableEntity
 {
     public Book(string title)
         : base(Guid.NewGuid())
@@ -22,6 +22,7 @@ public class Book : Entity, IAuditableEntity
     }
 
     public string Title { get; set; }
+
     public virtual List<Chapter> Chapters { get; set; } = new List<Chapter>();
 
     public DateTime CreateOnUtc { get; protected init; }
