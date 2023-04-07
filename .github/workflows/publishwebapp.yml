@@ -32,12 +32,12 @@ jobs:
         uses: azure/webapps-deploy@v2
         with:
           app-name: BookGeneratorApi
-          publish-profile: ${{ secrets.AZURE_PUBLISH_PROFILE_API }}
+          publish-profile: ${{ secrets.AZURE_PUBLISH_PROFILE_WEBAPI }}
           package: './src/BookGenerator.WebApi/Publish'
       - name: Deploy WebApp
         uses: azure/webapps-deploy@v2
         with:
           app-name: BookGenerator
-          publish-profile: ${{ secrets.AZURE_PUBLISH_PROFILE }}
+          publish-profile: ${{ secrets.AZURE_PUBLISH_PROFILE_WEBAPP }}
           package: './src/BookGenerator.Client/Publish'
         
