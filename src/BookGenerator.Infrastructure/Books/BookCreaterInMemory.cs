@@ -20,8 +20,9 @@ public class BookCreaterInMemory : IBookCreater
         this.scopeFactory = scopeFactory ?? throw new ArgumentNullException(nameof(scopeFactory));
     }
 
-    public async Task<Guid> CreateAsync(string bookTitle)
+    public async Task CreateAsync(Guid boodId)
     {
+        string bookTitle = $"Book {boodId}";
         Book book = new Book(bookTitle);
         BookProgress progress = new(book)
         {
@@ -64,6 +65,7 @@ public class BookCreaterInMemory : IBookCreater
 
         });
         task.Start();
-        return await Task.FromResult(book.Id);
+        // return await Task.FromResult(book.Id);
+        await Task.CompletedTask;
     }
 }

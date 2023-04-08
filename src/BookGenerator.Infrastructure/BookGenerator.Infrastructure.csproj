@@ -9,10 +9,12 @@
     <PackageReference Include="Betalgo.OpenAI.GPT3" Version="6.8.1" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="6.0.0" />
     <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="6.0.0" />
+    <PackageReference Include="Quartz" Version="3.6.2" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\BookGenerator.Application\BookGenerator.Application.csproj" />
+    <ProjectReference Include="..\BookGenerator.Persistence\BookGenerator.Persistence.csproj" />
   </ItemGroup>
 
 </Project>

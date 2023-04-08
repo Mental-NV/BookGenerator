@@ -4,6 +4,7 @@ using BookGenerator.Persistence.Books;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BookGenerator.Persistence.Migrations
 {
     [DbContext(typeof(BookDbContext))]
-    partial class BookContextModelSnapshot : ModelSnapshot
+    [Migration("20230408114616_OutboxMessages")]
+    partial class OutboxMessages
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -118,10 +120,10 @@ namespace BookGenerator.Persistence.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Content")
-                        .HasColumnType("nvarchar(4000)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Error")
-                        .HasColumnType("nvarchar(4000)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("OccuredOnUtc")
                         .HasColumnType("datetime2");
@@ -130,7 +132,7 @@ namespace BookGenerator.Persistence.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Type")
-                        .HasColumnType("nvarchar(250)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 

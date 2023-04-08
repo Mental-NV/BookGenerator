@@ -1,4 +1,5 @@
 ﻿using BookGenerator.Domain.Abstraction;
+using BookGenerator.Domain.DomainEvents;
 using BookGenerator.Domain.Primitives;
 
 namespace BookGenerator.Domain.Core;
@@ -28,4 +29,17 @@ public class Book : AggregateRoot, IAuditableEntity
     public DateTime CreateOnUtc { get; protected init; }
 
     public DateTime? ModifiedOnUtc { get; protected init; }
+
+    public static (Book, BookProgress) Create(string title)
+    {
+        Book book = new(title);
+        BookProgress progress = new(book)
+        {
+            Status = BookStatus.Pending,
+            Title = title
+        };
+        book.RaiseDomainEvent(new BookCreationStartedDomainEvent(book.Id));
+
+        return (book, progress);
+    }
 }

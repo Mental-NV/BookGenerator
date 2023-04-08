@@ -2,6 +2,7 @@
 using BookGenerator.Domain.Abstraction;
 using BookGenerator.Domain.Core;
 using BookGenerator.Domain.Primitives;
+using BookGenerator.Persistence.Outbox;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
@@ -20,6 +21,8 @@ public class BookDbContext : DbContext, IDbContext, IUnitOfWork
     public DbSet<BookProgress> BookProgresses { get; set; }
 
     public DbSet<Chapter> Chapters { get; set; }
+
+    public DbSet<OutboxMessage> OutboxMessages { get; set; }
 
     public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
     {
@@ -73,6 +76,18 @@ public class BookDbContext : DbContext, IDbContext, IUnitOfWork
             .HasOne<Book>()
             .WithOne()
             .HasForeignKey<BookProgress>(x => x.Id);
+
+        modelBuilder.Entity<OutboxMessage>()
+            .Property(x => x.Type)
+            .HasColumnType("nvarchar(250)");
+
+        modelBuilder.Entity<OutboxMessage>()
+            .Property(x => x.Content)
+            .HasColumnType("nvarchar(4000)");
+
+        modelBuilder.Entity<OutboxMessage>()
+            .Property(x => x.Error)
+            .HasColumnType("nvarchar(4000)");
     }
 
     /// <inheritdoc />

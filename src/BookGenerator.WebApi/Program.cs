@@ -1,6 +1,8 @@
 using BookGenerator.Application;
 using BookGenerator.Infrastructure;
+using BookGenerator.Infrastructure.BackgroundJobs;
 using BookGenerator.Persistence;
+using Quartz;
 using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -11,6 +13,25 @@ builder.Services
     .AddApplication()
     .AddInfrastructure(builder.Configuration)
     .AddPersistence(builder.Configuration);
+
+builder.Services.AddQuartz(configure =>
+{
+    var jobKey = new JobKey(nameof(ProcessOutboxMessagesJob));
+
+    configure
+        .AddJob<ProcessOutboxMessagesJob>(jobKey)
+        .AddTrigger(
+            trigger =>
+                trigger.ForJob(jobKey)
+                    .WithSimpleSchedule(
+                        schedule =>
+                            schedule.WithIntervalInSeconds(10)
+                                .RepeatForever()));
+
+    configure.UseMicrosoftDependencyInjectionJobFactory();
+});
+
+builder.Services.AddQuartzHostedService();
 
 builder.Services
     .AddControllers()

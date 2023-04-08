@@ -4,5 +4,5 @@ namespace BookGenerator.Domain.Services;
 
 public interface IBookCreater
 {
-    Task<Guid> CreateAsync(string bookTitle);
+    Task CreateAsync(Guid bookId);
 }
