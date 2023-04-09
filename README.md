@@ -3,4 +3,4 @@
 
 Generates books by a title using ChatGPT capabilities.
 
-Published on https://bookwriter.azurewebsites.net/
+Published on https://bookgenerator.azurewebsites.net/
