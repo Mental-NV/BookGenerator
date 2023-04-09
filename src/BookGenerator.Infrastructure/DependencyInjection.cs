@@ -27,8 +27,8 @@ public static class DependencyInjection
     {
         services.AddOpenAIService(settings =>
         {
-            settings.ApiKey = configuration["OPENAI_APIKEY"];
-            settings.Organization = configuration["OPENAI_ORG"];
+            settings.ApiKey = configuration["BookGeneratorOptions:OpenAIApiKey"];
+            settings.Organization = configuration["BookGeneratorOptions:OpenAIOrganization"];
         });
         services.AddHttpClient();
         return services;

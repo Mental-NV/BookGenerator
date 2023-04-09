@@ -6,6 +6,7 @@ using BookGenerator.Persistence.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 
 namespace BookGenerator.Persistence;
 
@@ -17,7 +18,7 @@ public static class DependencyInjection
         services.AddDbContext<BookDbContext>((sp, options) =>
             {
                 var interceptor = sp.GetRequiredService<ConvertDomainEventsToOutboxMessagesInterceptor>();
-                options.UseSqlServer(configuration["BOOKGENERATOR_CONNECTIONSTRING"])
+                options.UseSqlServer(configuration["BookGeneratorOptions:DatabaseConnectionString"])
                     .AddInterceptors(interceptor);
             });
         services.AddScoped<IDbContext>(serviceProvider => serviceProvider.GetRequiredService<BookDbContext>());

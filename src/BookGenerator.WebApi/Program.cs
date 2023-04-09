@@ -2,12 +2,20 @@ using BookGenerator.Application;
 using BookGenerator.Infrastructure;
 using BookGenerator.Infrastructure.BackgroundJobs;
 using BookGenerator.Persistence;
+using BookGenerator.WebApi.Configuration;
+using Microsoft.Extensions.Options;
 using Quartz;
 using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddProblemDetails();
+
+builder.Services
+    .ConfigureOptions<BookGeneratorOptionsSetup>()
+    .AddSingleton<IValidateOptions<BookGeneratorOptions>, BookGeneratorOptionsValidation>()
+    .AddOptions<BookGeneratorOptions>()
+    .ValidateOnStart();
 
 builder.Services
     .AddApplication()
