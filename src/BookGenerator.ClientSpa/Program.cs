@@ -1,8 +1,27 @@
+using BookGenerator.ClientSpa.ApiServices;
+using BookGenerator.ClientSpa.BackgroundWorkers;
 using Microsoft.AspNetCore.Http.Headers;
 using Microsoft.Net.Http.Headers;
 using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Services
+    .AddSingleton<IBookApiService, BookApiService>()
+    .AddHostedService<StartupWorker>();
+
+builder.Services
+    .AddHttpClient("BookApiClient", client =>
+    {
+        string? baseUrl = builder.Configuration["BookApiService:BaseUrl"];
+        if (string.IsNullOrEmpty(baseUrl))
+        {
+            throw new ApplicationException("Base url for BookApi is not set");
+        }
+        client.BaseAddress = new Uri(baseUrl);
+        client.DefaultRequestHeaders.Clear();
+        client.DefaultRequestHeaders.Add(HeaderNames.Accept, "application/json");
+    });
 
 // Add services to the container.
 builder.Services
