@@ -14,6 +14,11 @@
       <Folder Include="wwwroot\" />
     </ItemGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\BookGenerator.Application\BookGenerator.Application.csproj" />
+      <ProjectReference Include="..\BookGenerator.Domain\BookGenerator.Domain.csproj" />
+    </ItemGroup>
+
     <PropertyGroup>
         <SpaRoot>clientapp\</SpaRoot>
     </PropertyGroup>
