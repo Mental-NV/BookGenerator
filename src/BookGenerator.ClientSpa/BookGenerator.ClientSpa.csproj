@@ -7,10 +7,16 @@
     </PropertyGroup>
 
     <ItemGroup>
+      <None Remove="ClientApp\src\App.tsx" />
+      <None Remove="ClientApp\src\components\BookForm.tsx" />
+    </ItemGroup>
+
+    <ItemGroup>
         <PackageReference Include="Microsoft.AspNetCore.SpaServices.Extensions" Version="7.0.5" />
     </ItemGroup>
 
     <ItemGroup>
+      <Folder Include="ClientApp\src\api\" />
       <Folder Include="wwwroot\" />
     </ItemGroup>
 
@@ -19,8 +25,22 @@
       <ProjectReference Include="..\BookGenerator.Domain\BookGenerator.Domain.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <TypeScriptCompile Include="ClientApp\src\App.tsx" />
+      <TypeScriptCompile Include="ClientApp\src\components\BookForm.tsx" />
+    </ItemGroup>
+
+    <PropertyGroup Label="Configuration" Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+      <TypeScriptTarget>ESNext</TypeScriptTarget>
+    </PropertyGroup>
+
+    <PropertyGroup Label="Configuration" Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+      <TypeScriptTarget>ESNext</TypeScriptTarget>
+    </PropertyGroup>
+
     <PropertyGroup>
         <SpaRoot>clientapp\</SpaRoot>
+        <TypeScriptJSXEmit>preserve</TypeScriptJSXEmit>
     </PropertyGroup>
 
     <Target Name="PublishRunWebpack" AfterTargets="ComputeFilesToPublish">
