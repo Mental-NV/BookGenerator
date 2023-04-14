@@ -1,6 +1,7 @@
 using BookGenerator.ClientSpa.ApiServices;
 using BookGenerator.ClientSpa.BackgroundWorkers;
 using Microsoft.AspNetCore.Http.Headers;
+using Microsoft.AspNetCore.SpaServices.ReactDevelopmentServer;
 using Microsoft.Net.Http.Headers;
 using System.Text.Json.Serialization;
 
@@ -51,9 +52,15 @@ app.UseAuthorization();
 
 app.MapControllers();
 
-app.UseSpaStaticFiles();
 app.UseSpa(spa => {
     spa.Options.SourcePath = "clientapp";
+
+    if (app.Environment.IsDevelopment())
+    {
+        spa.Options.DevServerPort = 5173;
+        spa.UseReactDevelopmentServer(npmScript: "start");
+        
+    }
 });
 
 app.Run();
