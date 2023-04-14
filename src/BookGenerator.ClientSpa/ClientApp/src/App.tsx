@@ -3,8 +3,9 @@ import BookForm from './components/BookForm'
 
 const App: React.FC = () => {
 
-    const handleGenerate = (title: string) => {
-        console.log(title);
+    const handleGenerate = (bookId: string) => {
+        console.log(`Book generated with id: ${bookId}`);
+        alert(`Book generated with id: ${bookId}`);
     }
 
     return (

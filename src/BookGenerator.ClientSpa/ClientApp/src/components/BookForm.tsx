@@ -1,7 +1,8 @@
 ﻿import React, { useState } from 'react'
+import { createBook } from '../api/bookApi';
 
 interface BookFormProps {
-    onGenerate: (title: string) => void;
+    onGenerate: (bookId: string) => void;
 }
 
 const BookForm: React.FC<BookFormProps> = ({ onGenerate }) => {
@@ -10,13 +11,19 @@ const BookForm: React.FC<BookFormProps> = ({ onGenerate }) => {
 
     const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setTitle(event.target.value);
-    }
+    };
 
-    const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
-        onGenerate(title);
         setIsFormDisabled(true);
-    }
+
+        try {
+            const response = await createBook(title);
+            onGenerate(response.BookId);
+        } catch (error) {
+            console.error('Error generating book:', error);
+        }
+    };
 
     return (
         <form onSubmit={handleSubmit}>

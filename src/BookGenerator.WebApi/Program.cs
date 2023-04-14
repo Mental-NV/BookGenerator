@@ -41,6 +41,17 @@ builder.Services.AddQuartz(configure =>
 
 builder.Services.AddQuartzHostedService();
 
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("SpaClientPolicy", policy =>
+    {
+        policy.WithOrigins(builder.Configuration["SpaClient:BaseUrl"])
+            .AllowCredentials()
+            .AllowAnyMethod()
+            .AllowAnyHeader();
+    });
+});
+
 builder.Services
     .AddControllers()
     .AddJsonOptions(options =>
@@ -61,6 +72,7 @@ app.UseHttpsRedirection();
 
 app.UseAuthorization();
 
+app.UseCors("SpaClientPolicy");
 app.MapControllers();
 
 app.Run();
