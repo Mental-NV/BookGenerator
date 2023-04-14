@@ -9,6 +9,7 @@
     <ItemGroup>
       <None Remove="ClientApp\src\api\bookApi.ts" />
       <None Remove="ClientApp\src\App.tsx" />
+      <None Remove="ClientApp\src\components\AppRouter.tsx" />
       <None Remove="ClientApp\src\components\BookForm.tsx" />
     </ItemGroup>
 
@@ -28,6 +29,7 @@
     <ItemGroup>
       <TypeScriptCompile Include="ClientApp\src\api\bookApi.ts" />
       <TypeScriptCompile Include="ClientApp\src\App.tsx" />
+      <TypeScriptCompile Include="ClientApp\src\components\AppRouter.tsx" />
       <TypeScriptCompile Include="ClientApp\src\components\BookForm.tsx" />
     </ItemGroup>
 

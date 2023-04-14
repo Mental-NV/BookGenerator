@@ -26,11 +26,14 @@ const BookForm: React.FC<BookFormProps> = ({ onGenerate }) => {
     };
 
     return (
-        <form onSubmit={handleSubmit}>
-            <label htmlFor="book-title">Title</label>
-            <input type="text" id="book-title" value={title} onChange={handleChange} disabled={isFormDisabled} />
-            <button type="submit" disabled={isFormDisabled}>Generate</button>
-        </form>
+        <div>
+            <h1>Book Generator</h1>
+            <form onSubmit={handleSubmit}>
+                <label htmlFor="book-title">Title</label>
+                <input type="text" id="book-title" value={title} onChange={handleChange} disabled={isFormDisabled} />
+                <button type="submit" disabled={isFormDisabled}>Generate</button>
+            </form>
+        </div>
     );
 }
 
