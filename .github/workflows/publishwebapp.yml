@@ -3,37 +3,67 @@ name: publish pipeline
 on: [push]
 
 jobs:
-  build-and-deploy:
+  build-test-deploy:
 
     runs-on: ubuntu-latest
     strategy:
       matrix:
         dotnet-version: ['7.0.x']
+        node-version: [18.x]
 
     steps:
       - uses: actions/checkout@v3
+  
       - name: Setup .NET Core SDK ${{ matrix.dotnet-version }}
         uses: actions/setup-dotnet@v2
         with:
           dotnet-version: ${{ matrix.dotnet-version }}
+
       - name: Install dependencies
         run: dotnet restore
+
       - name: Build
         run: dotnet build --configuration Release --no-restore
+
       - name: Test
         run: dotnet test --no-restore --verbosity normal
+
+      - name: Setup Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v3
+        with:
+            node-version: ${{ matrix.node-version }}
+
+      - name: Install NPM dependencies
+        run: npm ci
+        working-directory: ./src/BookGenerator.ClientSpa/ClientApp
+
+      - name: Build NPM
+        run: npm run build
+        working-directory: ./src/BookGenerator.ClientSpa/ClientApp
+
+      - name: Run tests
+        run: npm run test
+        working-directory: ./src/BookGenerator.ClientSpa/ClientApp
+        
       - name: Publish WebApi
         run: dotnet publish -c Release -o Publish
         working-directory: ./src/BookGenerator.WebApi
+
       - name: Publish WebAPP
         run: dotnet publish -c Release -o Publish
         working-directory: ./src/BookGenerator.Client
+
+      - name: Publish WebAPP SPA
+        run: dotnet publish -c Release -o Publish
+        working-directory: ./src/BookGenerator.ClientSpa
+
       - name: Deploy WebApi
         uses: azure/webapps-deploy@v2
         with:
           app-name: BookGeneratorApi
           publish-profile: ${{ secrets.AZURE_PUBLISH_PROFILE_WEBAPI }}
           package: './src/BookGenerator.WebApi/Publish'
+
       - name: Deploy WebApp
         uses: azure/webapps-deploy@v2
         with:
