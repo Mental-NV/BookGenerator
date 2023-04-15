@@ -7,6 +7,7 @@
     </PropertyGroup>
 
     <ItemGroup>
+      <None Remove="ClientApp\jest.config.ts" />
       <None Remove="ClientApp\src\api\bookApi.ts" />
       <None Remove="ClientApp\src\App.tsx" />
       <None Remove="ClientApp\src\components\AppRouter.tsx" />
@@ -30,6 +31,7 @@
     </ItemGroup>
 
     <ItemGroup>
+      <TypeScriptCompile Include="ClientApp\jest.config.ts" />
       <TypeScriptCompile Include="ClientApp\src\api\bookApi.ts" />
       <TypeScriptCompile Include="ClientApp\src\App.tsx" />
       <TypeScriptCompile Include="ClientApp\src\components\AppRouter.tsx" />
