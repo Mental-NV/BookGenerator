@@ -6,6 +6,7 @@ const config: Config.InitialOptions = {
     transform: {
         '^.+\\.(js|jsx|ts|tsx)$': 'babel-jest',
     },
+    verbose: true,
 };
 
 export default config;

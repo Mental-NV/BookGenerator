@@ -23,13 +23,13 @@ describe('BookForm', () => {
         expect(button).toBeInTheDocument();
     });
 
-    test('handles user input', () => {
-        /*const input = screen.getByLabelText(/book title/i);
+    test('handles user input', async () => {
+        const input = screen.getByTestId(/bookTitleInput/i);
+        const testValue = 'Test book title';
 
-        userEvent.type(input, 'Test book title');
+        await userEvent.type(input, testValue);
 
-        expect(input).toHaveValue('Test book title');*/
-        expect(true).toBeTruthy();
+        expect(input).toHaveValue(testValue);
     });
 
     test('handles form submit', () => {
