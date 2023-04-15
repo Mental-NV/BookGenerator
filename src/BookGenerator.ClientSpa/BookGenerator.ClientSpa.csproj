@@ -51,13 +51,14 @@
     </PropertyGroup>
 
     <PropertyGroup>
-        <SpaRoot>clientapp\</SpaRoot>
+        <SpaRoot>ClientApp\</SpaRoot>
         <TypeScriptJSXEmit>preserve</TypeScriptJSXEmit>
     </PropertyGroup>
 
     <Target Name="PublishRunWebpack" AfterTargets="ComputeFilesToPublish">
         <!-- As part of publishing, ensure the JS resources are freshly built in production mode -->
-        <Exec WorkingDirectory="$(SpaRoot)" Command="npm install" />
+        <Exec WorkingDirectory="$(SpaRoot)" Command="echo 'npm install' &amp; npm install" Condition="'$(Configuration)'=='Debug'" />
+        <Exec WorkingDirectory="$(SpaRoot)" Command="echo 'npm ci' &amp; npm ci" Condition="'$(Configuration)'=='Release'" />
         <Exec WorkingDirectory="$(SpaRoot)" Command="npm run build" />
 
         <!-- Include the newly-built files in the publish output -->
