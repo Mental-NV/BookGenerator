@@ -49,7 +49,7 @@ describe('BookForm', () => {
         const button = screen.getByTestId(/generateButton/i);
         const form = screen.getByRole('form');
 
-        userEvent.type(input, 'Test book title');
+        await userEvent.type(input, 'Test book title');
         fireEvent.submit(form);
         expect(button).toBeDisabled();
     });
