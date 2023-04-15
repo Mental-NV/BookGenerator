@@ -23,6 +23,7 @@
     </ItemGroup>
 
     <ItemGroup>
+      <Folder Include="ClientApp\public\" />
       <Folder Include="wwwroot\" />
     </ItemGroup>
 
