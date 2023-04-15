@@ -1,19 +1,15 @@
 ﻿import React from 'react';
-import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
-import BookForm from './BookForm';
+import { BrowserRouter as Router } from 'react-router-dom';
+import { Route, Switch } from 'react-router-dom';
+import BookStatus from './BookStatus';
+import HomePage from './HomePage';
 
 const AppRouter: React.FC = () => {
-    const handleGenerate = (bookId: string) => {
-        console.log(`Book generated with id: ${bookId}`);
-        alert(`Book generated with id: ${bookId}`);
-    }
-
     return (
         <Router>
             <Switch>
-                <Route path="/">
-                    <BookForm onGenerate={handleGenerate} />
-                </Route>
+                <Route exact path="/" component={HomePage} />
+                <Route path="/status/:bookId" component={BookStatus} />
             </Switch>
         </Router>
     );
