@@ -5,7 +5,7 @@ interface CreateBookResponse {
 }
 
 const apiClient = axios.create({
-    baseURL: 'https://localhost:7195/api',
+    baseURL: `${import.meta.env.VITE_WEBAPI_BASE_URL}/api`,
     headers: {
         'Content-Type': 'application/json',
     },
