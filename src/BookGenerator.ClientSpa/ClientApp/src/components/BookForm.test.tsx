@@ -1,6 +1,7 @@
 ﻿import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import '@testing-library/jest-dom';
 import BookForm from './BookForm';
 
 describe('BookForm', () => {
@@ -15,12 +16,11 @@ describe('BookForm', () => {
     });
 
     test('render book title input and generate button', () => {
-        /*const input = screen.getByLabelText(/book title/i);
-        const button = screen.getByRole('button', { name: /generate/i });
+        const input = screen.getByTestId(/bookTitleInput/i);
+        const button = screen.getByTestId(/generateButton/i);
 
         expect(input).toBeInTheDocument();
-        expect(button).toBeInTheDocument();*/
-        expect(true).toBeTruthy();
+        expect(button).toBeInTheDocument();
     });
 
     test('handles user input', () => {
