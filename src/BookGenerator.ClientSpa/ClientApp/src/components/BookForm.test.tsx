@@ -32,26 +32,25 @@ describe('BookForm', () => {
         expect(input).toHaveValue(testValue);
     });
 
-    test('handles form submit', () => {
-        /*const input = screen.getByLabelText(/book title/i);
+    test('handles form submit', async () => {
+        const input = screen.getByTestId(/bookTitleInput/i);
         const form = screen.getByRole('form');
+        const testValue = 'Test book title';
 
-        userEvent.type(input, 'Test book title');
+        await userEvent.type(input, testValue);
         fireEvent.submit(form);
 
         expect(onGenerateMock).toHaveBeenCalledTimes(1);
-        expect(onGenerateMock).toHaveBeenCalledWith('Test book title');*/
-        expect(true).toBeTruthy();
+        expect(onGenerateMock).toHaveBeenCalledWith(testValue);
     });
 
     test('disable generate button after submittion', async () => {
-        /*const input = screen.getByLabelText(/book title/i);
-        const button = screen.getByRole('button', { name: /generate/i });
+        const input = screen.getByTestId(/bookTitleInput/i);
+        const button = screen.getByTestId(/generateButton/i);
         const form = screen.getByRole('form');
 
         userEvent.type(input, 'Test book title');
         fireEvent.submit(form);
-        expect(button).toBeDisabled();*/
-        expect(true).toBeTruthy();
+        expect(button).toBeDisabled();
     });
 });
