@@ -6,7 +6,8 @@ interface RouteParams {
 }
 
 const BookStatus: React.FC = () => {
-const { bookId } = useParams<RouteParams>();
+    const { bookId } = useParams<RouteParams>();
+
     return (
         <div>
             <h1>Book Status</h1>

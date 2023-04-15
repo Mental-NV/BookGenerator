@@ -10,6 +10,7 @@
       <None Remove="ClientApp\src\api\bookApi.ts" />
       <None Remove="ClientApp\src\App.tsx" />
       <None Remove="ClientApp\src\components\AppRouter.tsx" />
+      <None Remove="ClientApp\src\components\BookForm.test.tsx" />
       <None Remove="ClientApp\src\components\BookForm.tsx" />
       <None Remove="ClientApp\src\components\BookStatus.tsx" />
       <None Remove="ClientApp\src\components\HomePage.tsx" />
@@ -32,6 +33,7 @@
       <TypeScriptCompile Include="ClientApp\src\api\bookApi.ts" />
       <TypeScriptCompile Include="ClientApp\src\App.tsx" />
       <TypeScriptCompile Include="ClientApp\src\components\AppRouter.tsx" />
+      <TypeScriptCompile Include="ClientApp\src\components\BookForm.test.tsx" />
       <TypeScriptCompile Include="ClientApp\src\components\BookForm.tsx" />
       <TypeScriptCompile Include="ClientApp\src\components\BookStatus.tsx" />
       <TypeScriptCompile Include="ClientApp\src\components\HomePage.tsx" />
