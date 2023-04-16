@@ -1,0 +1,11 @@
+﻿.container {
+    width: 100%;
+    background-color: #f3f3f3;
+}
+
+.progressBar {
+    background-color: #4caf50;
+    text-align: center;
+    color: white;
+    padding: 5px 0;
+}

@@ -1,7 +1,7 @@
 ﻿import React from 'react';
 import { BrowserRouter as Router } from 'react-router-dom';
 import { Route, Switch } from 'react-router-dom';
-import BookStatus from './BookStatus';
+import StatusPage from './StatusPage';
 import HomePage from './HomePage';
 
 const AppRouter: React.FC = () => {
@@ -9,7 +9,7 @@ const AppRouter: React.FC = () => {
         <Router>
             <Switch>
                 <Route exact path="/" component={HomePage} />
-                <Route path="/status/:bookId" component={BookStatus} />
+                <Route path="/status/:bookId" component={StatusPage} />
             </Switch>
         </Router>
     );
