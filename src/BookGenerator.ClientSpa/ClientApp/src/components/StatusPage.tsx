@@ -12,24 +12,19 @@ const StatusPage: React.FC = () => {
     const [status, setStatus] = useState<GetStatusResponse | null>(null);
 
     const fetchStatus = async () => {
-        console.log(`Fetching status for book ${bookId}...`);
+        console.log(`Fetching status for book ${bookId}`);
         const statusData = await getBookStatus(bookId);
-
-        if (statusData.Status !== 'Pending') {
-            clearInterval(timer);
-            console.log(`Book ${bookId} is no longer pending, clearing interval...`);
-        }
-
         setStatus(statusData);
     }
 
-    const [timer] = useState<NodeJS.Timeout>(setInterval(fetchStatus, 10000));
-
     useEffect(() => {
-        console.log(`useEffect for book ${bookId}...`);
-        fetchStatus();
-        return () => clearInterval(timer);
-    }, []);
+        console.log(`StatusPage mounted for book ${bookId}`);
+        let timer: NodeJS.Timeout = setInterval(fetchStatus, 10000);
+        return () => {
+            console.log(`StatusPage unmounted for book ${bookId}`);
+            clearInterval(timer);
+        }
+    }, [bookId]);
 
     if (!status) {
         return <div>Loading...</div>;
