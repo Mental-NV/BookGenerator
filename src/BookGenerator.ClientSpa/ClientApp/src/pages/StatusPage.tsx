@@ -1,5 +1,5 @@
 ﻿import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useHistory } from 'react-router-dom';
 import BookStatus from '../components/BookStatus';
 import { getBookStatus, GetStatusResponse } from '../api/bookApi';
 
@@ -10,6 +10,7 @@ interface RouteParams {
 const StatusPage: React.FC = () => {
     const { bookId } = useParams<RouteParams>();
     const [status, setStatus] = useState<GetStatusResponse | null>(null);
+    const history = useHistory();
 
     const fetchStatus = async () => {
         console.log(`Fetching status for book ${bookId}`);
@@ -25,6 +26,12 @@ const StatusPage: React.FC = () => {
             clearInterval(timer);
         }
     }, [bookId]);
+
+    useEffect(() => {
+        if (status?.Status == 'Completed') {
+            history.push(`/download/${bookId}`);
+        }
+    }, [status]);
 
     if (!status) {
         return <div>Loading...</div>;
