@@ -1,10 +1,17 @@
 ﻿import React from 'react'
-import AppRouter from './components/AppRouter'
-
+import { BrowserRouter as Router } from 'react-router-dom';
+import { Route, Switch } from 'react-router-dom';
+import StatusPage from './pages/StatusPage';
+import HomePage from './pages/HomePage';
 
 const App: React.FC = () => {
     return (
-        <AppRouter />
+        <Router>
+            <Switch>
+                <Route exact path="/" component={HomePage} />
+                <Route path="/status/:bookId" component={StatusPage} />
+            </Switch>
+        </Router>
     );
 }
 

@@ -1,6 +1,6 @@
 ﻿import React from 'react';
 import { useHistory } from 'react-router-dom'
-import BookForm from './BookForm';
+import BookForm from '../components/BookForm';
 import { createBook } from '../api/bookApi';
 
 const HomePage: React.FC = () => {

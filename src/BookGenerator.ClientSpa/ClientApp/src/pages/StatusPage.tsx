@@ -1,6 +1,6 @@
 ﻿import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import BookStatus from './BookStatus';
+import BookStatus from '../components/BookStatus';
 import { getBookStatus, GetStatusResponse } from '../api/bookApi';
 
 interface RouteParams {
