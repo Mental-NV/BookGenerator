@@ -65,4 +65,25 @@ public class BookController : ApiController
 
         return Ok(file);
     }
+
+    [HttpGet("download2/{bookId}")]
+    public async Task<IActionResult> Download2(Guid bookId, CancellationToken cancellationToken)
+    {
+        GetBookByIdQuery query = new GetBookByIdQuery(bookId);
+        var result = await sender.Send(query, cancellationToken);
+
+        if (result.IsFailure)
+        {
+            return HandleFailure(result);
+        }
+
+        BookFile bookFile = converter.ToTextFile(result.Value);
+
+        MemoryStream contentStream = new MemoryStream(bookFile.Content);
+
+        return new FileStreamResult(contentStream, bookFile.ContentType)
+        {
+            FileDownloadName = bookFile.Name
+        };
+    }
 }
