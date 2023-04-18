@@ -17,7 +17,7 @@ public class BookConverter : IBookConverter
         }
         return new BookFile()
         {
-            Name = book.Title,
+            Name = $"{book.Title}.md",
             Content = Encoding.UTF8.GetBytes(sb.ToString()),
             ContentType = "text/plain"
         };
