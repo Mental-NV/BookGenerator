@@ -52,8 +52,10 @@ app.UseAuthorization();
 
 app.MapControllers();
 
+app.UseSpaStaticFiles();
+
 app.UseSpa(spa => {
-    spa.Options.SourcePath = "clientapp";
+    spa.Options.SourcePath = "ClientApp";
 
     if (app.Environment.IsDevelopment())
     {
