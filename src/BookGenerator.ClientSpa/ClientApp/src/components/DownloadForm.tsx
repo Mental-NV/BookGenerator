@@ -1,27 +1,28 @@
-﻿import React from 'react';
+﻿import React, { useMemo } from 'react';
 import { BookFile } from '../api/bookApi';
+import styles from './DownloadForm.module.css';
 
 interface DownloadFormProps {
     bookFile: BookFile;
 }
 
 const DownloadForm: React.FC<DownloadFormProps> = ({ bookFile }) => {
-    const downloadBook = () => {
+    const blobUrl = useMemo(() => {
         const blob = new Blob([bookFile.Content], { type: bookFile.ContentType });
         const url = URL.createObjectURL(blob);
-
-        const link = document.createElement('a');
-        link.href = url;
-        link.download = bookFile.Name;
-        link.click();
-
-        URL.revokeObjectURL(url);
-    };
+        return url;
+    }, [bookFile]);
 
     return (
-        <div>
-            <h3>Download {bookFile.Name}</h3>
-            <button onClick={downloadBook}>Download</button>
+        <div className={styles.container}>
+            <h3 className={styles.heading}>Download {bookFile.Name}</h3>
+            <a
+                href={blobUrl}
+                download={bookFile.Name}
+                className={styles.downloadLink}
+            >
+                Download
+            </a>
         </div>
     );
 };
