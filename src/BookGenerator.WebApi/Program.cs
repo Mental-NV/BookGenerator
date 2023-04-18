@@ -46,9 +46,9 @@ builder.Services.AddCors(options =>
     options.AddPolicy("SpaClientPolicy", policy =>
     {
         policy.WithOrigins(builder.Configuration["SpaClient:BaseUrl"])
-            .AllowCredentials()
-            .AllowAnyMethod()
             .AllowAnyHeader()
+            .AllowAnyMethod()
+            .AllowCredentials()
             .WithExposedHeaders("Content-Disposition");
     });
 });
