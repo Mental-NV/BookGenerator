@@ -2,6 +2,7 @@
 import { useParams } from 'react-router-dom';
 import { getBookFile, BookFile } from '../api/bookApi';
 import DownloadForm from '../components/DownloadForm';
+import styles from './DownloadPage.module.css';
 
 interface RouteParams {
     bookId: string;
@@ -22,9 +23,11 @@ const DownloadPage: React.FC = () => {
 
     if (!bookFile) {
         return (
-            <div>
-                <h1>Download Page</h1>
-                <p>Your book with ID {bookId} is downloading.</p>
+            <div className={styles.container}>
+                <h1 className={styles.heading}>Download Page</h1>
+                <p className={styles.loadingText}>
+                    Your book with ID {bookId} is downloading.
+                </p>
             </div>
         );
     }
