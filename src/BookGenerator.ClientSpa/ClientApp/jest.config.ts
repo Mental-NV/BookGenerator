@@ -7,6 +7,9 @@ const config: Config.InitialOptions = {
         '^.+\\.(js|jsx|ts|tsx)$': 'babel-jest',
     },
     verbose: true,
+    moduleNameMapper: {
+        '\\.module\\.css$': 'identity-obj-proxy',
+    },
 };
 
 export default config;
