@@ -20,7 +20,7 @@ const BookForm: React.FC<BookFormProps> = ({ onGenerate }) => {
 
     return (
         <div className="flex flex-col min-h-screen justify-center items-center">
-            <div className="w-full max-w-2xl h-24 flex flex-col">
+            <div className="w-full max-w-2xl h-52 flex flex-col">
                 <h1 className="text-center text-slate-900 font-bold text-3xl mb-6">Book Generator</h1>
                 <form className="flex flex-row flex-nowrap" onSubmit={handleSubmit} role="form">
                     <label className="flex-none hidden" htmlFor="book-title">Title</label>
