@@ -40,7 +40,15 @@ const StatusPage: React.FC = () => {
     }, [status]);
 
     if (!status) {
-        return <div>Loading...</div>;
+        return (
+            <div className="flex flex-col min-h-screen justify-center items-center">
+                <div className="w-full max-w-2xl h-52 flex flex-col">
+                    <p className="text-center">
+                        Loading...
+                    </p>
+                </div>
+            </div>
+        );
     }
 
     return <BookStatus status={status} width={width} />;

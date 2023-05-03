@@ -22,11 +22,13 @@ const DownloadPage: React.FC = () => {
 
     if (!bookFile) {
         return (
-            <div>
-                <h1>Download Page</h1>
-                <p>
-                    Your book with ID {bookId} is downloading.
-                </p>
+            <div className="flex flex-col min-h-screen justify-center items-center">
+                <div className="w-full max-w-2xl h-52 flex flex-col">
+                    <h1 className="text-center text-slate-900 font-bold text-3xl mb-4">Download Page</h1>
+                    <p className="text-center">
+                        Your book with ID {bookId} is downloading.
+                    </p>
+                </div>
             </div>
         );
     }
