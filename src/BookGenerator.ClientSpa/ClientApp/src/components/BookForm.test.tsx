@@ -46,11 +46,12 @@ describe('BookForm', () => {
 
     test('disable generate button after submittion', async () => {
         const input = screen.getByTestId(/bookTitleInput/i);
-        const button = screen.getByTestId(/generateButton/i);
         const form = screen.getByRole('form');
 
         await userEvent.type(input, 'Test book title');
         fireEvent.submit(form);
+
+        const button = screen.getByTestId(/generateButton/i);
         expect(button).toBeDisabled();
     });
 });
