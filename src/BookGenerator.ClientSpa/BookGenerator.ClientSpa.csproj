@@ -16,7 +16,6 @@
       <None Remove="ClientApp\src\components\BookStatus.tsx" />
       <None Remove="ClientApp\src\components\DownloadForm.tsx" />
       <None Remove="ClientApp\src\components\HomePage.tsx" />
-      <None Remove="ClientApp\src\components\ProgressBar.tsx" />
       <None Remove="ClientApp\src\components\StatusPage.tsx" />
       <None Remove="ClientApp\src\pages\DownloadPage.tsx" />
     </ItemGroup>
@@ -43,7 +42,6 @@
       <TypeScriptCompile Include="ClientApp\src\components\BookForm.tsx" />
       <TypeScriptCompile Include="ClientApp\src\components\BookStatus.tsx" />
       <TypeScriptCompile Include="ClientApp\src\components\DownloadForm.tsx" />
-      <TypeScriptCompile Include="ClientApp\src\components\ProgressBar.tsx" />
       <TypeScriptCompile Include="ClientApp\src\pages\DownloadPage.tsx" />
       <TypeScriptCompile Include="ClientApp\src\pages\StatusPage.tsx" />
       <TypeScriptCompile Include="ClientApp\src\pages\HomePage.tsx" />
