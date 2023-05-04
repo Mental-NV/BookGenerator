@@ -14,7 +14,7 @@ const BookStatus: React.FC<BookStatusProps> = ({ status, width }) => {
                 <h1 className="text-center text-slate-900 font-bold text-3xl mb-4">{status.BookTitle}</h1>
                 <div className="h-10 w-full bg-gray-200 rounded-full dark:bg-gray-700">
                     <div
-                        className="h-10 p-3 bg-blue-600 text-sm font-medium text-blue-100 text-center p-1 leading-none rounded-full"
+                        className="h-10 pt-3 bg-blue-600 text-sm font-medium text-blue-100 text-center p-1 leading-none rounded-full"
                         style={{ width: width + '%' }}>{status.Progress}%</div>
                 </div>
 

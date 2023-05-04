@@ -43,9 +43,7 @@ const StatusPage: React.FC = () => {
         return (
             <div className="flex flex-col min-h-screen justify-center items-center">
                 <div className="w-full max-w-2xl h-52 flex flex-col">
-                    <p className="text-center">
-                        Loading...
-                    </p>
+                    <h1 className="text-center text-slate-900 font-bold text-3xl mb-4">Loading...</h1>
                 </div>
             </div>
         );
