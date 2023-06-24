@@ -24,7 +24,7 @@ const BookForm: React.FC<BookFormProps> = ({ onGenerate }) => {
                 <h1 className="text-center text-slate-900 font-bold text-3xl mb-4">Book Generator</h1>
                 <form className="flex flex-row flex-nowrap" onSubmit={handleSubmit} role="form">
                     <label className="flex-none hidden" htmlFor="book-title">Title</label>
-                    <input className="grow h-10 ml-1 rounded-lg border border-gray-400 p-2" type="text" id="bookTitleInput"
+                    <input className="grow h-10 mx-1 rounded-lg border border-gray-400 p-2" type="text" id="bookTitleInput"
                         data-testid="bookTitleInput" value={title}
                         placeholder="Enter a book title"
                         onChange={handleChange} disabled={isFormDisabled} />
