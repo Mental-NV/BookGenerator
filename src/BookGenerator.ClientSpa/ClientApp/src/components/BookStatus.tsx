@@ -10,7 +10,7 @@ const BookStatus: React.FC<BookStatusProps> = ({ status, width }) => {
 
     return (
         <div className="flex flex-col min-h-screen justify-center items-center">
-            <div className="w-full max-w-2xl h-52 flex flex-col">
+            <div className="w-11/12 max-w-2xl h-52 flex flex-col">
                 <h1 className="text-center text-slate-900 font-bold text-3xl mb-4">{status.BookTitle}</h1>
                 <div className="h-10 w-full bg-gray-200 rounded-full dark:bg-gray-700">
                     <div
