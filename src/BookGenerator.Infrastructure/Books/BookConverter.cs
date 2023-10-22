@@ -12,7 +12,6 @@ public class BookConverter : IBookConverter
         sb.AppendLine(book.Title);
         foreach (var chapter in book.Chapters)
         {
-            sb.AppendLine(chapter.Title);
             sb.AppendLine(chapter.Content);
         }
         return new BookFile()
