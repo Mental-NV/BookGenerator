@@ -1,5 +1,5 @@
-﻿import React, { useState, useEffect } from 'react';
-import { getBookStatus, GetStatusResponse } from '../api/bookApi';
+﻿import React from 'react';
+import { GetStatusResponse } from '../api/bookApi';
 
 interface BookStatusProps {
     status: GetStatusResponse;

@@ -26,7 +26,7 @@ const StatusPage: React.FC = () => {
     useEffect(() => {
         fetchStatus();
         console.log(`StatusPage mounted for book ${bookId}`);
-        let timer: NodeJS.Timeout = setInterval(fetchStatus, 10000);
+        const timer: NodeJS.Timeout = setInterval(fetchStatus, 10000);
         return () => {
             console.log(`StatusPage unmounted for book ${bookId}`);
             clearInterval(timer);
