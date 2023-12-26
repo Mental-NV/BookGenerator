@@ -4,6 +4,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using OpenAI.GPT3.Extensions;
+using QuestPDF.Infrastructure;
 
 namespace BookGenerator.Infrastructure;
 public static class DependencyInjection
@@ -19,7 +20,10 @@ public static class DependencyInjection
             services.AddScoped<IBookCreater, BookCreaterChatGpt>();
         }
         services.AddOpenAIChatGpt(configuration);
-        services.AddScoped<IBookConverter, BookConverter>();
+        services.AddScoped<IBookConverter, PdfBookConverter>();
+
+        QuestPDF.Settings.License = LicenseType.Community;
+
         return services;
     }
 

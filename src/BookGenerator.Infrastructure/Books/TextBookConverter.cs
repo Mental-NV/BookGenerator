@@ -4,9 +4,9 @@ using System.Text;
 
 namespace BookGenerator.Infrastructure.Books;
 
-public class BookConverter : IBookConverter
+public class TextBookConverter : IBookConverter
 {
-    public BookFile ToTextFile(Book book)
+    public BookFile Convert(Book book)
     {
         StringBuilder sb = new StringBuilder();
         sb.AppendLine(book.Title);

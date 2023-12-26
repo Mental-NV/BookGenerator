@@ -4,6 +4,8 @@ using BookGenerator.Domain.Repositories;
 using BookGenerator.Domain.Services;
 using Microsoft.Extensions.DependencyInjection;
 using System.Collections.Concurrent;
+using System.Diagnostics;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace BookGenerator.Infrastructure.Books;
 
@@ -11,12 +13,14 @@ public class BookCreaterInMemory : IBookCreater
 {
     private readonly IBookRepository bookRepository;
     private readonly IUnitOfWork unitOfWork;
+    private readonly IProgressRepository progressRepository;
     private readonly IServiceScopeFactory scopeFactory;
 
-    public BookCreaterInMemory(IBookRepository bookRepository, IUnitOfWork unitOfWork, IServiceScopeFactory scopeFactory)
+    public BookCreaterInMemory(IBookRepository bookRepository, IUnitOfWork unitOfWork, IProgressRepository progressRepository, IServiceScopeFactory scopeFactory)
     {
         this.bookRepository = bookRepository ?? throw new ArgumentNullException(nameof(bookRepository));
         this.unitOfWork = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork));
+        this.progressRepository = progressRepository ?? throw new ArgumentNullException(nameof(progressRepository));
         this.scopeFactory = scopeFactory ?? throw new ArgumentNullException(nameof(scopeFactory));
     }
 
@@ -31,6 +35,7 @@ public class BookCreaterInMemory : IBookCreater
             Title = bookTitle
         };
         bookRepository.Insert(book);
+        progressRepository.Insert(progress);
         int rowAffected = await unitOfWork.SaveChangesAsync();
         if (rowAffected == 0)
         {
@@ -39,7 +44,7 @@ public class BookCreaterInMemory : IBookCreater
 
         var task = new Task(async () =>
         {
-            await Task.Delay(15000);
+            await Task.Delay(3000);
             using (var scope = scopeFactory.CreateScope())
             {
                 var scopedChapterRepository = scope.ServiceProvider.GetRequiredService<IChapterRepository>();
@@ -55,17 +60,20 @@ public class BookCreaterInMemory : IBookCreater
                         BookId = book.Id
                     });
                 }
+                await scopedUnityOfWork.SaveChangesAsync();
 
                 BookProgress scopedBookProgress = await scopedProgressRepository.GetByIdAsync(book.Id);
                 scopedBookProgress.Progress = 100;
                 scopedBookProgress.Status = BookStatus.Completed;
                 scopedProgressRepository.Update(scopedBookProgress);
                 await scopedUnityOfWork.SaveChangesAsync();
+
+                scopedBookProgress = await scopedProgressRepository.GetByIdAsync(book.Id);
+                Trace.WriteLine($"Book progress is {scopedBookProgress.Progress}");
             }
 
         });
         task.Start();
-        // return await Task.FromResult(book.Id);
         await Task.CompletedTask;
     }
 }

@@ -61,7 +61,7 @@ public class BookController : ApiController
             return HandleFailure(result);
         }
 
-        BookFile file = converter.ToTextFile(result.Value);
+        BookFile file = converter.Convert(result.Value);
 
         return Ok(file);
     }
@@ -77,7 +77,7 @@ public class BookController : ApiController
             return HandleFailure(result);
         }
 
-        BookFile bookFile = converter.ToTextFile(result.Value);
+        BookFile bookFile = converter.Convert(result.Value);
 
         MemoryStream contentStream = new MemoryStream(bookFile.Content);
 

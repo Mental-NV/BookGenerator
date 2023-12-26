@@ -10,6 +10,7 @@
     <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="6.0.0" />
     <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="6.0.0" />
     <PackageReference Include="Quartz" Version="3.6.2" />
+    <PackageReference Include="QuestPDF" Version="2023.12.1" />
   </ItemGroup>
 
   <ItemGroup>

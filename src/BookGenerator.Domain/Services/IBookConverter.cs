@@ -4,5 +4,5 @@ namespace BookGenerator.Domain.Services;
 
 public interface IBookConverter
 {
-    BookFile ToTextFile(Book book);
+    BookFile Convert(Book book);
 }
