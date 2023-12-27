@@ -11,7 +11,6 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="Quartz.Extensions.Hosting" Version="3.6.2" />
-    <PackageReference Include="QuestPDF" Version="2023.12.1" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.2.3" />
   </ItemGroup>
 
