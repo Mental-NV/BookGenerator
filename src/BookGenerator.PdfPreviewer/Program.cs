@@ -19,7 +19,7 @@ for (int i = 0; i < 10; i++)
         Title = Placeholders.Name(),
     };
 
-    chapter.Content = $"#{chapter.Title}\r\n{Placeholders.Paragraph()}\r\n##{Placeholders.Name()}\r\n{Placeholders.Paragraph()}\r\n###{Placeholders.Name()}\r\n{Placeholders.Paragraphs()}";
+    chapter.Content = $"#{chapter.Title}\r\n{Placeholders.Paragraph()}\r\nNormal text sample. **Bold text sample.** Another normal text. **An important text.** Normal text.\r\n##{Placeholders.Name()}\r\n{Placeholders.Paragraph()}\r\n###{Placeholders.Name()}\r\nNormal text sample. **Bold text sample.** Another normal text. **An important text.** Normal text.\r\n{Placeholders.Paragraphs()}";
 
     book.Chapters.Add(chapter);
 }

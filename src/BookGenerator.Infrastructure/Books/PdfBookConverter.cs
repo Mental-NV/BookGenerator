@@ -7,6 +7,7 @@ using QuestPDF.Infrastructure;
 using QuestPDF.Previewer;
 using QuestPDF.Elements;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using System.Security.Cryptography;
 
 namespace BookGenerator.Infrastructure.Books;
 
@@ -45,6 +46,7 @@ public class BookDocument : IDocument
             .Page(page =>
             {
                 page.Margin(50);
+                page.DefaultTextStyle(style => style.FontFamily(Fonts.TimesNewRoman));
                 page.Content().Element(ComposeContent);
                 page.Footer().Dynamic(new PageNumberFooter());
             });
@@ -82,7 +84,36 @@ public class BookDocument : IDocument
                     }
                     else
                     {
-                        stack.Item().Text(paragraph).FontSize(14);
+                        stack.Item().Text(text =>
+                        {
+                            text.DefaultTextStyle(style => style.FontSize(12).NormalWeight());
+
+                            var normal = TextStyle.Default.NormalWeight();
+                            var bold = TextStyle.Default.SemiBold();
+
+                            int pos = 0;
+                            while (pos < paragraph.Length)
+                            {
+                                int p1 = paragraph.IndexOf("**", pos);
+                                int p2 = paragraph.IndexOf("**", p1 + 2);
+                                if (p1 != -1 && p2 != -1)
+                                {
+                                    if (pos < p1)
+                                    {
+                                        text.Span(paragraph[pos..p1]).Style(normal);
+                                    }
+                                    text.Span(paragraph[(p1 + 2)..p2]).Style(bold);
+                                    pos = p2 + 2;
+                                }
+                                else
+                                {
+                                    text.Span(paragraph[pos..]).Style(normal);
+                                    pos = paragraph.Length;
+                                }
+                            }
+                        });
+
+
                     }   
                 }
                 if (chapter != book.Chapters.Last())
