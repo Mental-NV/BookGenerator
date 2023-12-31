@@ -31,6 +31,7 @@ public static class DependencyInjection
     public static void InitializeQueryPdf()
     {
         QuestPDF.Settings.License = LicenseType.Community;
+        QuestPDF.Settings.CheckIfAllTextGlyphsAreAvailable = false;
 
         var fonts = new string[]
         {
