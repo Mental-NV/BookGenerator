@@ -4,6 +4,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using OpenAI.GPT3.Extensions;
+using QuestPDF.Drawing;
 using QuestPDF.Infrastructure;
 
 namespace BookGenerator.Infrastructure;
@@ -21,10 +22,26 @@ public static class DependencyInjection
         }
         services.AddOpenAIChatGpt(configuration);
         services.AddScoped<IBookConverter, PdfBookConverter>();
-
-        QuestPDF.Settings.License = LicenseType.Community;
+        
+        InitializeQueryPdf();
 
         return services;
+    }
+
+    public static void InitializeQueryPdf()
+    {
+        QuestPDF.Settings.License = LicenseType.Community;
+
+        var fonts = new string[]
+        {
+            "Assets/Fonts/NotoSansSC-VariableFont_wght.ttf"
+        };
+
+        foreach (var font in fonts)
+        {
+            using var stream = File.OpenRead(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, font));
+            FontManager.RegisterFontWithCustomName("Noto", stream);
+        }
     }
 
     private static IServiceCollection AddOpenAIChatGpt(this IServiceCollection services, IConfiguration configuration)

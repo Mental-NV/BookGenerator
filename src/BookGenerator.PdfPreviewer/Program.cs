@@ -1,12 +1,14 @@
 ﻿using BookGenerator.Domain.Core;
 using BookGenerator.Domain.Services;
+using BookGenerator.Infrastructure;
 using BookGenerator.Infrastructure.Books;
 using QuestPDF.Fluent;
 using QuestPDF.Helpers;
 using QuestPDF.Infrastructure;
 using QuestPDF.Previewer;
+using System.Drawing;
 
-QuestPDF.Settings.License = LicenseType.Community;
+DependencyInjection.InitializeQueryPdf();
 
 Book book = new Book("A sample book");
 
@@ -25,7 +27,7 @@ for (int i = 0; i < 10; i++)
 }
 
 BookDocument bookDocument = new(book);
-byte[] bytes = bookDocument.GeneratePdf();
+bookDocument.GeneratePdf("test.pdf");
 bookDocument.ShowInPreviewer();
 
 

@@ -8,6 +8,7 @@ using QuestPDF.Previewer;
 using QuestPDF.Elements;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using System.Security.Cryptography;
+using QuestPDF.Drawing;
 
 namespace BookGenerator.Infrastructure.Books;
 
@@ -46,7 +47,7 @@ public class BookDocument : IDocument
             .Page(page =>
             {
                 page.Margin(50);
-                page.DefaultTextStyle(style => style.FontFamily(Fonts.TimesNewRoman));
+                page.DefaultTextStyle(style => style.FontFamily("Noto"));
                 page.Content().Element(ComposeContent);
                 page.Footer().Dynamic(new PageNumberFooter());
             });
