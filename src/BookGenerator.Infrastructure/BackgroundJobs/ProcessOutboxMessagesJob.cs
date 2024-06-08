@@ -11,17 +11,13 @@ using System.Text.Json;
 namespace BookGenerator.Infrastructure.BackgroundJobs;
 
 [DisallowConcurrentExecution]
-public sealed class ProcessOutboxMessagesJob : IJob
+public sealed class ProcessOutboxMessagesJob(BookDbContext dbContext,
+                                             IPublisher publisher,
+                                             ILogger<ProcessOutboxMessagesJob> logger) : IJob
 {
-    private readonly BookDbContext dbContext;
-    private readonly IPublisher publisher;
-    private readonly ILogger<ProcessOutboxMessagesJob> logger;
-
-    public ProcessOutboxMessagesJob(BookDbContext dbContext, IPublisher publisher)
-    {
-        this.dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
-        this.publisher = publisher ?? throw new ArgumentNullException(nameof(publisher));
-    }
+    private readonly BookDbContext dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
+    private readonly IPublisher publisher = publisher ?? throw new ArgumentNullException(nameof(publisher));
+    private readonly ILogger<ProcessOutboxMessagesJob> logger = logger ?? throw new ArgumentNullException(nameof(logger));
 
     public async Task Execute(IJobExecutionContext context)
     {
