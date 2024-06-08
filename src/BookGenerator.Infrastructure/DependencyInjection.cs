@@ -3,7 +3,7 @@ using BookGenerator.Infrastructure.Books;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using OpenAI.GPT3.Extensions;
+using OpenAI.Extensions;
 using QuestPDF.Drawing;
 using QuestPDF.Infrastructure;
 

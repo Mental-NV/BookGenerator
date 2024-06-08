@@ -1,14 +1,14 @@
 ﻿using BookGenerator.Domain.Services;
-using OpenAI.GPT3.Interfaces;
-using OpenAI.GPT3.Managers;
-using OpenAI.GPT3.ObjectModels.RequestModels;
-using OpenAI.GPT3.ObjectModels;
+using OpenAI.Interfaces;
+using OpenAI.Managers;
+using OpenAI.ObjectModels.RequestModels;
+using OpenAI.ObjectModels;
 using System.Text;
 using BookGenerator.Domain.Core;
 using Microsoft.Extensions.DependencyInjection;
 using BookGenerator.Application.Abstractions.Data;
 using BookGenerator.Domain.Repositories;
-using OpenAI.GPT3.ObjectModels.ResponseModels;
+using OpenAI.ObjectModels.ResponseModels;
 
 namespace BookGenerator.Infrastructure.Books;
 
