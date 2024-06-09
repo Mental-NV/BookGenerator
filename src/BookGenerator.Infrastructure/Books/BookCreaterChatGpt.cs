@@ -48,7 +48,7 @@ public class BookCreaterChatGpt : IBookCreater
                 new CompletionCreateRequest()
                 {
                     Prompt = $"Write a table of content for a book with name '{bookTitle}'. Please format list the chapters in format 'Chapter #: Title'",
-                    Model = Models.TextDavinciV3,
+                    Model = "gpt-3.5-turbo-instruct",
                     MaxTokens = 4000
                 }
             );
@@ -63,7 +63,7 @@ public class BookCreaterChatGpt : IBookCreater
         if (!tocResponse.Successful)
         {
             progress.Status = BookStatus.Failed;
-            progress.ErrorMessage = tocResponse.Error.ToString();
+            progress.ErrorMessage = tocResponse.Error?.Message;
             progressRepository.Update(progress);
             await unitOfWork.SaveChangesAsync();
             return;
@@ -101,7 +101,7 @@ public class BookCreaterChatGpt : IBookCreater
                     new CompletionCreateRequest()
                     {
                         Prompt = $"Write a chapter '{chapter} for the book '{bookTitle}'. Format titles with leading #. Format subtitles with leading ##.",
-                        Model = Models.TextDavinciV3,
+                        Model = "gpt-3.5-turbo-instruct",
                         MaxTokens = 4000
                     }
                 );
@@ -116,7 +116,7 @@ public class BookCreaterChatGpt : IBookCreater
             if (!chapterResponse.Successful)
             {
                 progress.Status = BookStatus.Failed;
-                progress.ErrorMessage = chapterResponse.Error.ToString();
+                progress.ErrorMessage = tocResponse.Error?.Message;
                 progressRepository.Update(progress);
                 await unitOfWork.SaveChangesAsync();
                 return;
