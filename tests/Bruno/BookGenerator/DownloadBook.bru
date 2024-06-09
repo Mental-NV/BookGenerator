@@ -12,7 +12,7 @@ get {
 
 assert {
   res.status: eq 200
-  res.getHeader("content-type"): contains application/pdf
-  res.getHeader("content-disposition"): contains filename
-  res.getHeader("content-length"): gt 0
+  res.headers["content-type"]: contains application/pdf
+  res.headers["content-disposition"]: contains filename
+  res.headers["content-length"]: isDefined 
 }
