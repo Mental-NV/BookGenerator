@@ -1,0 +1,15 @@
+meta {
+  name: CreateBook
+  type: http
+  seq: 2
+}
+
+post {
+  url: https://bookgeneratorapi.azurewebsites.net/api/book
+  body: json
+  auth: none
+}
+
+body:json {
+  "Unicors strike back"
+}

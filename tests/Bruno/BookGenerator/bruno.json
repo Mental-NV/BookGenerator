@@ -1,0 +1,9 @@
+{
+  "version": "1",
+  "name": "BookGenerator",
+  "type": "collection",
+  "ignore": [
+    "node_modules",
+    ".git"
+  ]
+}
