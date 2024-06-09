@@ -13,3 +13,9 @@ post {
 body:json {
   "Unicors strike back"
 }
+
+assert {
+  res.status: eq 200
+  res.body.BookId: isString
+  res.body.BookId.length: eq 36
+}

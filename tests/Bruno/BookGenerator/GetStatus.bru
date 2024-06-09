@@ -9,3 +9,10 @@ get {
   body: none
   auth: none
 }
+
+assert {
+  res.status: eq 200
+  res.body.BookTitle: isString
+  res.body.Progress: isNumber 
+  res.body.ErrorMessage: isNull 
+}

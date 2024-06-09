@@ -9,3 +9,10 @@ get {
   body: none
   auth: none
 }
+
+assert {
+  res.status: eq 200
+  res.getHeader("content-type"): contains application/pdf
+  res.getHeader("content-disposition"): contains filename
+  res.getHeader("content-length"): gt 0
+}
