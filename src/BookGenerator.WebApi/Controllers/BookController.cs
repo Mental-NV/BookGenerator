@@ -3,6 +3,7 @@ using BookGenerator.Application.Books.Queries.GetBook;
 using BookGenerator.Application.Books.Queries.GetStatus;
 using BookGenerator.Application.Contracts.Books;
 using BookGenerator.Domain.Core;
+using BookGenerator.Domain.DomainEvents;
 using BookGenerator.Domain.Primitives.Result;
 using BookGenerator.Domain.Services;
 using MediatR;
@@ -12,15 +13,10 @@ namespace BookGenerator.WebApi.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
-public class BookController : ApiController
+public class BookController(ISender sender, IBookConverter converter, IPublisher publisher) : ApiController(sender)
 {
-    private readonly IBookConverter converter;
-
-    public BookController(ISender sender, IBookConverter converter)
-        : base(sender)
-    {
-        this.converter = converter ?? throw new ArgumentNullException(nameof(converter));
-    }
+    private readonly IBookConverter converter = converter ?? throw new ArgumentNullException(nameof(converter));
+    private readonly IPublisher publisher = publisher ?? throw new ArgumentNullException(nameof(publisher));
 
     [HttpPost]
     public async Task<IActionResult> Create([FromBody] string title, CancellationToken cancellationToken)
@@ -32,6 +28,8 @@ public class BookController : ApiController
         {
             return HandleFailure(result);
         }
+
+        await publisher.Publish(new BookCreationStartedDomainEvent(result.Value.BookId));
 
         return Ok(result.Value);
     }
