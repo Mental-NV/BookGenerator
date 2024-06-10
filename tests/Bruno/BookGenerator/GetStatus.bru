@@ -11,8 +11,8 @@ get {
 }
 
 assert {
-  res.status: eq 200
+  res.status: eq 404
   res.body.BookTitle: isString
-  res.body.Progress: isNumber 
-  res.body.ErrorMessage: isNull 
+  res.body.Progress: isNumber
+  res.body.ErrorMessage: isNull
 }

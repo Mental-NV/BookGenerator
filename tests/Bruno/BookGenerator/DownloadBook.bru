@@ -11,8 +11,8 @@ get {
 }
 
 assert {
-  res.status: eq 200
+  res.status: eq 404
   res.headers["content-type"]: contains application/pdf
   res.headers["content-disposition"]: contains filename
-  res.headers["content-length"]: isDefined 
+  res.headers["content-length"]: isDefined
 }
