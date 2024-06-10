@@ -1,4 +1,4 @@
-name: publish pipeline
+﻿name: publish pipeline
 
 on: [push]
 
@@ -70,4 +70,26 @@ jobs:
           app-name: BookGenerator
           publish-profile: ${{ secrets.AZURE_PUBLISH_PROFILE_WEBAPP }}
           package: './src/BookGenerator.ClientSpa/Publish'
+      
+      - name: Install Bruno CLI
+        run: npm install -g @brunocli/bruno-cli
+
+      - name: Run Bruno integration tests
+        run: bru run
+        working-directory: ./tests/Bruno/BookGenerator
+        continue-on-error: true
+
+      - name: Notify on failure
+        if: failure()
+        uses: actions/github-script@v6
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            github.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: 'Bruno API tests have failed',
+              issue_number: context.payload.pull_request ? context.payload.pull_request.number : context.run_id,
+              body: '⚠️ Bruno API tests have failed. Please check the logs.'
+            })
         
