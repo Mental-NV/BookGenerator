@@ -46,6 +46,7 @@ builder.Services.AddCors(options =>
     options.AddDefaultPolicy(policy =>
     {
         policy.WithOrigins(builder.Configuration["SpaClient:BaseUrl"])
+            .AllowAnyOrigin()
             .AllowAnyHeader()
             .AllowAnyMethod()
             .Build();
