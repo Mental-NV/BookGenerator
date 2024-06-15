@@ -77,4 +77,6 @@ jobs:
       - name: Run Bruno integration tests
         run: bru run
         working-directory: ./tests/Bruno/BookGenerator
-     
+
+
+

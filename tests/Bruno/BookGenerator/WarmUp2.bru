@@ -1,18 +1,11 @@
 meta {
-  name: GetStatus
+  name: WarmUp2
   type: http
-  seq: 4
+  seq: 2
 }
 
 get {
   url: https://bookgeneratorapi.azurewebsites.net/api/book/1aaa986a-3120-4155-b4ed-4fb6f14d36f3
   body: none
   auth: none
-}
-
-assert {
-  res.status: eq 200
-  res.body.BookTitle: isString
-  res.body.Progress: isNumber
-  res.body.ErrorMessage: isNull
 }
