@@ -11,7 +11,7 @@ Published on https://bookgenerator.azurewebsites.net/
 Run Entity Framework migrations for the Persistence project:
 
 ```powershell
-dotnet ef database update --project .\src\BookGenerator.Persistence\BookGenerator.Persistence.csproj
+dotnet ef database update --project .\src\BookGenerator.WebApi\BookGenerator.WebApi.csproj
 ```
 
 ### Web API
@@ -20,13 +20,13 @@ Build and run the Web API:
 
 ```powershell
 # Build
-dotnet build .\src\BookGenerator.WebApi\BookGenerator.WebApi.csproj
+dotnet build
+
+# Test
+dotnet test
 
 # Run
 dotnet run --project .\src\BookGenerator.WebApi\BookGenerator.WebApi.csproj
-
-# Test
-dotnet test .\tests\BookGenerator.*.UnitTests.csproj
 ```
 
 ### Client SPA
@@ -34,14 +34,8 @@ dotnet test .\tests\BookGenerator.*.UnitTests.csproj
 Build and run the Client SPA application:
 
 ```powershell
-# Build
-dotnet build .\src\BookGenerator.ClientSpa\BookGenerator.ClientSpa.csproj
-
 # Run
 dotnet run --project .\src\BookGenerator.ClientSpa\BookGenerator.ClientSpa.csproj
-
-# Test
-dotnet test .\tests\BookGenerator.Client.UnitTests\BookGenerator.Client.UnitTests.csproj
 ```
 
 #### React + Vite Client App
