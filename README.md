@@ -58,3 +58,20 @@ npm run build
 # Run tests
 npm run test
 ```
+
+### API Integration Tests (Bruno)
+
+Run the API integration tests using Bruno CLI:
+
+#### Install Bruno CLI
+
+```powershell
+npm install -g @usebruno/cli
+```
+
+#### Run the Tests
+
+```powershell
+cd tests/Bruno/BookGenerator
+bru run
+```
