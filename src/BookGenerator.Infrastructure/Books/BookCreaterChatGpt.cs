@@ -1,28 +1,24 @@
-﻿using BookGenerator.Domain.Services;
-using OpenAI.Interfaces;
-using OpenAI.Managers;
-using OpenAI.ObjectModels.RequestModels;
-using OpenAI.ObjectModels;
-using System.Text;
+﻿#nullable enable
+
+using BookGenerator.Domain.Services;
 using BookGenerator.Domain.Core;
-using Microsoft.Extensions.DependencyInjection;
 using BookGenerator.Application.Abstractions.Data;
+using BookGenerator.Application.Abstractions.LLM;
 using BookGenerator.Domain.Repositories;
-using OpenAI.ObjectModels.ResponseModels;
 
 namespace BookGenerator.Infrastructure.Books;
 
 public class BookCreaterChatGpt : IBookCreater
 {
-    private readonly IOpenAIService openAIService;
+    private readonly IChatCompletionService chatCompletionService;
     private readonly IBookRepository bookRepository;
     private readonly IProgressRepository progressRepository;
     private readonly IChapterRepository chapterRepository;
     private readonly IUnitOfWork unitOfWork;
 
-    public BookCreaterChatGpt(IOpenAIService openAIService, IBookRepository bookRepository, IProgressRepository progressRepository, IChapterRepository chapterRepository, IUnitOfWork unitOfWork)
+    public BookCreaterChatGpt(IChatCompletionService chatCompletionService, IBookRepository bookRepository, IProgressRepository progressRepository, IChapterRepository chapterRepository, IUnitOfWork unitOfWork)
     {
-        this.openAIService = openAIService ?? throw new ArgumentNullException(nameof(openAIService));
+        this.chatCompletionService = chatCompletionService ?? throw new ArgumentNullException(nameof(chatCompletionService));
         this.bookRepository = bookRepository ?? throw new ArgumentNullException(nameof(bookRepository));
         this.progressRepository = progressRepository ?? throw new ArgumentNullException(nameof(progressRepository));
         this.chapterRepository = chapterRepository ?? throw new ArgumentNullException(nameof(chapterRepository));
@@ -39,102 +35,74 @@ public class BookCreaterChatGpt : IBookCreater
         progressRepository.Update(progress);
         await unitOfWork.SaveChangesAsync();
 
-        CompletionCreateResponse tocResponse = null;
-        int tocAttempt = 0;
-        const int maxAttempts = 3;
-        while (tocAttempt++ < maxAttempts)
-        {
-            tocResponse = await openAIService.Completions.CreateCompletion(
-                new CompletionCreateRequest()
-                {
-                    Prompt = $"Write a table of content for a book with name '{bookTitle}'. Please format list the chapters in format 'Chapter #: Title'",
-                    Model = "gpt-3.5-turbo-instruct",
-                    MaxTokens = 4000
-                }
-            );
+        // Generate Table of Contents
+        string tocPrompt = $"Write a table of contents for a book with name '{bookTitle}'. Please format the chapters in the format 'Chapter #: Title' on each line.";
+        string? tableOfContent = await chatCompletionService.GetCompletionAsync(tocPrompt, maxTokens: 4000);
 
-            if (tocResponse.Successful)
-            {
-                break;
-            }
-            await Task.Delay(2000);
-        }
-
-        if (!tocResponse.Successful)
+        if (string.IsNullOrEmpty(tableOfContent))
         {
             progress.Status = BookStatus.Failed;
-            progress.ErrorMessage = tocResponse.Error?.Message;
+            progress.ErrorMessage = chatCompletionService.LastErrorMessage ?? "Failed to generate table of contents";
             progressRepository.Update(progress);
             await unitOfWork.SaveChangesAsync();
             return;
         }
 
-        if (!tocResponse.Choices.Any())
-        {
-            progress.Status = BookStatus.Failed;
-            progress.ErrorMessage = $"No response from ChatGPT API. {tocResponse}";
-            progressRepository.Update(progress);
-            await unitOfWork.SaveChangesAsync();
-            return;
-        }
-
-        string tableOfContent = tocResponse.Choices.First().Text;
         progress.Progress = 10;
         progressRepository.Update(progress);
         await unitOfWork.SaveChangesAsync();
 
+        // Parse chapters from table of contents
         IEnumerable<string> chapters = tableOfContent.Split("\n")
-            .Where(chapter => chapter.Contains("Chapter ", StringComparison.InvariantCultureIgnoreCase));
+            .Where(chapter => !string.IsNullOrWhiteSpace(chapter) && chapter.Contains("Chapter ", StringComparison.InvariantCultureIgnoreCase))
+            .ToList();
+
+        if (!chapters.Any())
+        {
+            progress.Status = BookStatus.Failed;
+            progress.ErrorMessage = "No chapters found in generated table of contents";
+            progressRepository.Update(progress);
+            await unitOfWork.SaveChangesAsync();
+            return;
+        }
+
+        int totalChapters = chapters.Count();
         int chapterNumber = 1;
+
+        // Generate content for each chapter
         foreach (string chapter in chapters)
         {
-            int progressValue = 10 + (int)((85.0 * chapterNumber++) / chapters.Count());
+            int progressValue = 10 + (int)((85.0 * chapterNumber) / totalChapters);
             progress.Progress = progressValue;
             progressRepository.Update(progress);
             await unitOfWork.SaveChangesAsync();
 
-            CompletionCreateResponse chapterResponse = null;
-            int chapterAttempt = 0;
-            while (chapterAttempt++ < maxAttempts)
-            {
-                chapterResponse = await openAIService.Completions.CreateCompletion(
-                    new CompletionCreateRequest()
-                    {
-                        Prompt = $"Write a chapter '{chapter} for the book '{bookTitle}'. Format titles with leading #. Format subtitles with leading ##.",
-                        Model = "gpt-3.5-turbo-instruct",
-                        MaxTokens = 4000
-                    }
-                );
+            string chapterPrompt = $"Write a detailed chapter titled '{chapter.Trim()}' for the book '{bookTitle}'. " +
+                $"Format the main title with a leading #. Format subtitles with leading ##. " +
+                $"Write comprehensive content for this chapter.";
 
-                if (chapterResponse.Successful)
-                {
-                    break;
-                }
-                await Task.Delay(2000);
-            }
+            string? chapterContent = await chatCompletionService.GetCompletionAsync(chapterPrompt, maxTokens: 4000);
 
-            if (!chapterResponse.Successful)
+            if (string.IsNullOrEmpty(chapterContent))
             {
                 progress.Status = BookStatus.Failed;
-                progress.ErrorMessage = tocResponse.Error?.Message;
+                progress.ErrorMessage = chatCompletionService.LastErrorMessage ?? $"Failed to generate content for {chapter}";
                 progressRepository.Update(progress);
                 await unitOfWork.SaveChangesAsync();
                 return;
             }
 
-            if (!chapterResponse.Choices.Any())
+            var chapterEntity = new Chapter
             {
-                progress.Status = BookStatus.Failed;
-                progress.ErrorMessage = $"No response from ChatGPT API. {chapterResponse}";
-                progressRepository.Update(progress);
-                await unitOfWork.SaveChangesAsync();
-                return;
-            }
-
-            string text = chapterResponse.Choices.First().Text;
-            var chapterEntity = new Chapter() { Content = text, Title = chapter, Order = chapterNumber, BookId = book.Id };
+                Content = chapterContent,
+                Title = chapter.Trim(),
+                Order = chapterNumber,
+                BookId = book.Id
+            };
             chapterRepository.Insert(chapterEntity);
-            await unitOfWork.SaveChangesAsync(); 
+            await unitOfWork.SaveChangesAsync();
+
+            chapterNumber++;
         }
 
         progress.Progress = 100;

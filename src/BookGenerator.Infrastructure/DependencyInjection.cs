@@ -1,9 +1,10 @@
 ﻿using BookGenerator.Domain.Services;
 using BookGenerator.Infrastructure.Books;
+using BookGenerator.Application.Abstractions.LLM;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using OpenAI.Extensions;
+using OpenAI.Chat;
 using QuestPDF.Drawing;
 using QuestPDF.Infrastructure;
 
@@ -47,12 +48,17 @@ public static class DependencyInjection
 
     private static IServiceCollection AddOpenAIChatGpt(this IServiceCollection services, IConfiguration configuration)
     {
-        services.AddOpenAIService(settings =>
-        {
-            settings.ApiKey = configuration["BookGeneratorOptions:OpenAIApiKey"];
-            settings.Organization = configuration["BookGeneratorOptions:OpenAIOrganization"];
-        });
-        services.AddHttpClient();
+        var apiKey = configuration["BookGeneratorOptions:OpenAIApiKey"];
+
+        // Register ChatClient as a singleton - it's thread-safe and should be reused
+        services.AddSingleton<ChatClient>(new ChatClient(
+            model: "gpt-4o-mini", // Using gpt-4o-mini for better quality and cost-efficiency
+            apiKey: apiKey
+        ));
+
+        // Register the chat completion service
+        services.AddSingleton<IChatCompletionService, ChatCompletionService>();
+
         return services;
     }
 }
