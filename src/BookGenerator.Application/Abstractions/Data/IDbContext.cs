@@ -1,7 +1,7 @@
 ﻿using BookGenerator.Domain.Core;
 using BookGenerator.Domain.Primitives;
-using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
+using System.Data.Common;
 
 namespace BookGenerator.Application.Abstractions.Data;
 
@@ -58,5 +58,5 @@ public interface IDbContext
     /// <param name="parameters">The parameters collection.</param>
     /// <param name="cancellationToken">The cancellation token.</param>
     /// <returns>The number of rows affected.</returns>
-    Task<int> ExecuteSqlAsync(string sql, IEnumerable<SqlParameter> parameters, CancellationToken cancellationToken = default);
+    Task<int> ExecuteSqlAsync(string sql, IEnumerable<DbParameter> parameters, CancellationToken cancellationToken = default);
 }

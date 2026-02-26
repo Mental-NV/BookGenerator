@@ -65,6 +65,8 @@ builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
+await app.Services.ApplyPersistenceMigrationsAsync(app.Logger);
+
 app.UseSwagger();
 app.UseSwaggerUI();
 

@@ -3,9 +3,9 @@ using BookGenerator.Domain.Abstraction;
 using BookGenerator.Domain.Core;
 using BookGenerator.Domain.Primitives;
 using BookGenerator.Persistence.Outbox;
-using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
+using System.Data.Common;
 
 namespace BookGenerator.Persistence.Books;
 
@@ -37,23 +37,21 @@ public class BookDbContext : DbContext, IDbContext, IUnitOfWork
     {
         modelBuilder.Entity<Book>()
             .Property(x => x.Title)
-            .HasColumnType("nvarchar(250)")
+            .HasMaxLength(250)
             .IsRequired();
 
         modelBuilder.Entity<Book>()
             .Property(x => x.CreateOnUtc)
-            .IsRequired()
-            .HasDefaultValueSql("GETUTCDATE()");
+            .IsRequired();
 
         modelBuilder.Entity<Chapter>()
             .Property(x => x.Title)
-            .HasColumnType("nvarchar(250)")
+            .HasMaxLength(250)
             .IsRequired();
 
         modelBuilder.Entity<Chapter>()
             .Property(x => x.CreateOnUtc)
-            .IsRequired()
-            .HasDefaultValueSql("GETUTCDATE()");
+            .IsRequired();
 
         modelBuilder.Entity<Chapter>()
             .Property(x => x.Content)
@@ -64,13 +62,12 @@ public class BookDbContext : DbContext, IDbContext, IUnitOfWork
 
         modelBuilder.Entity<BookProgress>()
             .Property(x => x.Title)
-            .HasColumnType("nvarchar(250)")
+            .HasMaxLength(250)
             .IsRequired();
 
         modelBuilder.Entity<BookProgress>()
             .Property(x => x.CreateOnUtc)
-            .IsRequired()
-            .HasDefaultValueSql("GETUTCDATE()");
+            .IsRequired();
 
         modelBuilder.Entity<BookProgress>()
             .HasOne<Book>()
@@ -79,15 +76,15 @@ public class BookDbContext : DbContext, IDbContext, IUnitOfWork
 
         modelBuilder.Entity<OutboxMessage>()
             .Property(x => x.Type)
-            .HasColumnType("nvarchar(250)");
+            .HasMaxLength(250);
 
         modelBuilder.Entity<OutboxMessage>()
             .Property(x => x.Content)
-            .HasColumnType("nvarchar(4000)");
+            .HasMaxLength(4000);
 
         modelBuilder.Entity<OutboxMessage>()
             .Property(x => x.Error)
-            .HasColumnType("nvarchar(4000)");
+            .HasMaxLength(4000);
     }
 
     /// <inheritdoc />
@@ -122,7 +119,7 @@ public class BookDbContext : DbContext, IDbContext, IUnitOfWork
         => Set<TEntity>().Remove(entity);
 
     /// <inheritdoc />
-    public Task<int> ExecuteSqlAsync(string sql, IEnumerable<SqlParameter> parameters, CancellationToken cancellationToken = default)
+    public Task<int> ExecuteSqlAsync(string sql, IEnumerable<DbParameter> parameters, CancellationToken cancellationToken = default)
         => Database.ExecuteSqlRawAsync(sql, parameters, cancellationToken);
 
     private void UpdateAudidableEntities(DateTime utcNow)
