@@ -1,5 +1,5 @@
 # BookGenerator
-![Build workflow](https://github.com/Mental-NV/BookGenerator/actions/workflows/publishwebapp.yml/badge.svg)
+![Build workflow](https://github.com/Mental-NV/BookGenerator/actions/workflows/publish.yml/badge.svg) ![Code Coverage](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/Mental-NV/BookGenerator/master/.github/badges/coverage.json)
 
 Generates books by a title using ChatGPT capabilities.
 

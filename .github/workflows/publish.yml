@@ -1,0 +1,202 @@
+﻿name: publish pipeline
+
+on:
+  push:
+    branches:
+      - master
+    paths-ignore:
+      - ".github/badges/**"
+
+# Needed so the workflow can push commits back to the repo (coverage badges).
+permissions:
+  contents: write
+
+jobs:
+  build-test-deploy:
+
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        dotnet-version: ['8.0.x']
+        node-version: [22.x]
+
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+  
+      - name: Setup .NET Core SDK ${{ matrix.dotnet-version }}
+        uses: actions/setup-dotnet@v2
+        with:
+          dotnet-version: ${{ matrix.dotnet-version }}
+
+      - name: Install dependencies
+        run: dotnet restore
+
+      - name: Build
+        run: dotnet build --configuration Release --no-restore
+
+      - name: Test (with coverage)
+        run: dotnet test --no-restore --verbosity normal --collect:"XPlat Code Coverage" --results-directory ./TestResults
+
+      - name: Build coverage badge JSON
+        id: coverage_badge
+        shell: bash
+        run: |
+          python3 <<'PY'
+          import glob
+          import json
+          import os
+          import sys
+          import xml.etree.ElementTree as ET
+
+          files = glob.glob("TestResults/**/coverage.cobertura.xml", recursive=True)
+          if not files:
+              print("No coverage.cobertura.xml files found", file=sys.stderr)
+              sys.exit(1)
+
+          total_valid = 0
+          total_covered = 0
+          for path in files:
+              root = ET.parse(path).getroot()
+              lines_valid = root.attrib.get("lines-valid")
+              lines_covered = root.attrib.get("lines-covered")
+              if lines_valid is None or lines_covered is None:
+                  print(f"Missing coverage attributes in {path}", file=sys.stderr)
+                  sys.exit(1)
+              total_valid += int(float(lines_valid))
+              total_covered += int(float(lines_covered))
+
+          if total_valid <= 0:
+              print("Total valid lines is zero", file=sys.stderr)
+              sys.exit(1)
+
+          percent = (total_covered / total_valid) * 100
+          percent_str = f"{percent:.1f}%"
+
+          if percent >= 90:
+              color = "brightgreen"
+          elif percent >= 80:
+              color = "green"
+          elif percent >= 70:
+              color = "yellowgreen"
+          elif percent >= 60:
+              color = "yellow"
+          elif percent >= 50:
+              color = "orange"
+          else:
+              color = "red"
+
+          badge = {
+              "schemaVersion": 1,
+              "label": "coverage",
+              "message": percent_str,
+              "color": color,
+          }
+
+          os.makedirs(".github/badges", exist_ok=True)
+          with open(".github/badges/coverage.json", "w", encoding="utf-8") as f:
+              json.dump(badge, f, separators=(",", ":"))
+              f.write("\n")
+
+          with open(os.environ["GITHUB_OUTPUT"], "a", encoding="utf-8") as f:
+              f.write(f"percent={percent_str}\n")
+          PY
+
+      - name: Commit coverage badge to master
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          BADGE_TMP="$(mktemp)"
+          cp .github/badges/coverage.json "$BADGE_TMP"
+          WORKTREE_DIR="$(mktemp -d)"
+          cleanup() {
+            git worktree remove --force "$WORKTREE_DIR" >/dev/null 2>&1 || true
+            rm -f "$BADGE_TMP"
+          }
+          trap cleanup EXIT
+
+          if git ls-remote --exit-code --heads origin master >/dev/null 2>&1; then
+            git fetch origin master
+            git worktree add --force --detach "$WORKTREE_DIR" origin/master
+            MASTER_EXISTS=1
+          else
+            git worktree add --force --detach "$WORKTREE_DIR" HEAD
+            MASTER_EXISTS=0
+          fi
+
+          (
+            cd "$WORKTREE_DIR"
+
+            if [ "$MASTER_EXISTS" = "0" ]; then
+              git checkout --orphan badge-master-init
+              git rm -rf . >/dev/null 2>&1 || true
+            fi
+
+            mkdir -p .github/badges
+            cp "$BADGE_TMP" .github/badges/coverage.json
+
+            git add .github/badges/coverage.json
+            if git diff --cached --quiet; then
+              echo "Coverage badge unchanged; no commit needed."
+              exit 0
+            fi
+
+            git commit -m "chore: update coverage badge (${{ steps.coverage_badge.outputs.percent }}) [skip ci]"
+            git push origin HEAD:master
+          )
+
+      - name: Setup Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v3
+        with:
+            node-version: ${{ matrix.node-version }}
+
+      - name: Install NPM dependencies
+        run: npm ci
+        working-directory: ./src/BookGenerator.ClientSpa/ClientApp
+
+      - name: Build NPM
+        run: npm run build
+        working-directory: ./src/BookGenerator.ClientSpa/ClientApp
+
+      - name: Run tests
+        run: npm run test
+        working-directory: ./src/BookGenerator.ClientSpa/ClientApp
+        
+      - name: Publish WebApi
+        run: dotnet publish -c Release -o Publish
+        working-directory: ./src/BookGenerator.WebApi
+
+      - name: Publish WebAPP
+        run: dotnet publish -c Release -o Publish
+        working-directory: ./src/BookGenerator.Client
+
+      - name: Publish WebAPP SPA
+        run: dotnet publish -c Release -o Publish
+        working-directory: ./src/BookGenerator.ClientSpa
+
+      - name: Deploy WebApi
+        uses: azure/webapps-deploy@v2
+        with:
+          app-name: BookGeneratorApi
+          publish-profile: ${{ secrets.AZURE_PUBLISH_PROFILE_WEBAPI }}
+          package: './src/BookGenerator.WebApi/Publish'
+
+      - name: Deploy WebApp
+        uses: azure/webapps-deploy@v2
+        with:
+          app-name: BookGenerator
+          publish-profile: ${{ secrets.AZURE_PUBLISH_PROFILE_WEBAPP }}
+          package: './src/BookGenerator.ClientSpa/Publish'
+      
+      - name: Install Bruno CLI
+        run: npm install -g @usebruno/cli
+
+      - name: Run Bruno integration tests
+        run: bru run
+        working-directory: ./tests/Bruno/BookGenerator
+
+
+
