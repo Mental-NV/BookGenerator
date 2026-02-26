@@ -138,7 +138,7 @@ jobs:
             mkdir -p .github/badges
             cp "$BADGE_TMP" .github/badges/coverage.json
 
-            git add .github/badges/coverage.json
+            git add -f .github/badges/coverage.json
             if git diff --cached --quiet; then
               echo "Coverage badge unchanged; no commit needed."
               exit 0
@@ -197,6 +197,5 @@ jobs:
       - name: Run Bruno integration tests
         run: bru run
         working-directory: ./tests/Bruno/BookGenerator
-
 
 
