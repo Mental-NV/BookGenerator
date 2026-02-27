@@ -1,11 +1,18 @@
 meta {
-  name: WarmUp2
+  name: WarmUp5
   type: http
   seq: 5
 }
 
 get {
-  url: https://bookgeneratorapi.azurewebsites.net/api/book/1aaa986a-3120-4155-b4ed-4fb6f14d36f3
+  url: {{baseUrl}}/api/book/{{bookId}}
   body: none
   auth: none
+}
+
+script:pre-request {
+  const useRuntimeBookId = String(bru.getEnvVar("useRuntimeBookId") || "").toLowerCase() === "true";
+  if (useRuntimeBookId) {
+    bru.runner.skipRequest();
+  }
 }

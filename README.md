@@ -5,14 +5,6 @@ Generates books by a title using ChatGPT capabilities.
 
 Published on https://bookgenerator.azurewebsites.net/
 
-## SQLite Deployment Notes (Azure App Service Linux)
-
-- The Web API now uses SQLite and auto-applies EF Core migrations on startup.
-- Store the SQLite file outside the deployment folder so redeployments do not overwrite it.
-- Recommended Azure App Service setting (Web API app):
-  - `BookGeneratorOptions__DatabaseConnectionString=Data Source=/home/data/bookgenerator/bookgenerator.db;Cache=Shared;Pooling=True`
-- Keep the Web API App Service scaled to `1` instance while using SQLite.
-
 ## Getting Started
 
 ### Database Migration
@@ -78,9 +70,38 @@ Run the API integration tests using Bruno CLI:
 npm install -g @usebruno/cli
 ```
 
-#### Run the Tests
+#### Run Cloud Tests (CI/CD behavior)
 
 ```powershell
 cd tests/Bruno/BookGenerator
-bru run
+bru run --env cloud
 ```
+
+#### Run Local Tests (`https://localhost:7445`)
+
+```powershell
+# One-time: trust local development certificate
+dotnet dev-certs https --trust
+
+# Start WebApi in deterministic local mode
+$env:Model='Test'
+dotnet run --project .\src\BookGenerator.WebApi\BookGenerator.WebApi.csproj
+
+# In a separate terminal, run Bruno locally
+cd tests/Bruno/BookGenerator
+bru run --env local
+```
+
+Optional troubleshooting (if local TLS trust is not set up yet):
+
+```powershell
+bru run --env local --insecure
+```
+
+## SQLite Deployment Notes (Azure App Service Linux)
+
+- The Web API now uses SQLite and auto-applies EF Core migrations on startup.
+- Store the SQLite file outside the deployment folder so redeployments do not overwrite it.
+- Recommended Azure App Service setting (Web API app):
+  - `BookGeneratorOptions__DatabaseConnectionString=Data Source=/home/data/bookgenerator/bookgenerator.db;Cache=Shared;Pooling=True`
+- Keep the Web API App Service scaled to `1` instance while using SQLite.

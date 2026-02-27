@@ -5,7 +5,7 @@ meta {
 }
 
 get {
-  url: https://bookgeneratorapi.azurewebsites.net/api/book/1aaa986a-3120-4155-b4ed-4fb6f14d36f3
+  url: {{baseUrl}}/api/book/{{bookId}}
   body: none
   auth: none
 }
@@ -15,4 +15,32 @@ assert {
   res.body.BookTitle: isString
   res.body.Progress: isNumber
   res.body.ErrorMessage: isNull
+}
+
+script:post-response {
+  const waitForCompletion = String(bru.getEnvVar("waitForCompletion") || "").toLowerCase() === "true";
+
+  if (waitForCompletion) {
+    const status = String(res.body?.Status || "");
+    const normalizedStatus = status.toLowerCase();
+    const errorMessage = res.body?.ErrorMessage;
+
+    if (normalizedStatus === "failed" || normalizedStatus === "error" || (typeof errorMessage === "string" && errorMessage.trim().length > 0)) {
+      throw new Error(`Book generation failed. Status=${status}, Error=${errorMessage}`);
+    }
+
+    if (normalizedStatus !== "completed") {
+      const currentAttempt = Number(bru.getVar("statusPollAttempt") || "0");
+      const nextAttempt = currentAttempt + 1;
+      const maxPollAttempts = Number(bru.getEnvVar("maxPollAttempts") || "30");
+      bru.setVar("statusPollAttempt", String(nextAttempt));
+      if (nextAttempt <= maxPollAttempts) {
+        bru.runner.setNextRequest("GetStatus");
+      } else {
+        console.warn(`Book generation did not reach Completed status within ${maxPollAttempts} polls. Last status=${status}. Continuing test flow.`);
+      }
+    } else {
+      bru.setVar("statusPollAttempt", "0");
+    }
+  }
 }
